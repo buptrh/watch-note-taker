@@ -49,3 +49,16 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.watchnotetaker.tests
         SWIFT_VERSION: "6.0"
         GENERATE_INFOPLIST_FILE: true
+
+  WatchNoteTakerUITests:
+    type: bundle.ui-testing
+    platform: watchOS
+    sources:
+      - WatchNoteTakerUITests
+    dependencies:
+      - target: WatchNoteTaker
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.watchnotetaker.uitests
+        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: true

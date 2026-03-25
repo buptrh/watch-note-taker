@@ -3,8 +3,8 @@ import SwiftUI
 @main
 struct WatchNoteTakerApp: App {
     @State private var viewModel = RecordingViewModel(
-        audioRecorder: AudioRecorder(),
-        transcriptionEngine: TranscriptionEngine(),
+        audioRecorder: WatchNoteTakerApp.makeAudioRecorder(),
+        transcriptionEngine: WatchNoteTakerApp.makeTranscriptionEngine(),
         noteStore: NoteStore()
     )
 
@@ -15,5 +15,21 @@ struct WatchNoteTakerApp: App {
                     ActionButtonIntent.viewModel = viewModel
                 }
         }
+    }
+
+    private static func makeAudioRecorder() -> any AudioRecording {
+        #if targetEnvironment(simulator)
+        SimulatorAudioRecorder()
+        #else
+        AudioRecorder()
+        #endif
+    }
+
+    private static func makeTranscriptionEngine() -> any Transcribing {
+        #if targetEnvironment(simulator)
+        SimulatorTranscriptionEngine()
+        #else
+        TranscriptionEngine()
+        #endif
     }
 }
