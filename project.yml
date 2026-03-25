@@ -1,0 +1,51 @@
+name: WatchNoteTaker
+options:
+  bundleIdPrefix: com.watchnotetaker
+  deploymentTarget:
+    watchOS: "10.0"
+  xcodeVersion: "16.0"
+
+packages:
+  WhisperKit:
+    url: https://github.com/argmaxinc/WhisperKit.git
+    from: "0.9.0"
+
+targets:
+  WatchNoteTaker:
+    type: application
+    platform: watchOS
+    sources:
+      - WatchNoteTaker
+    dependencies:
+      - package: WhisperKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.watchnotetaker.watchkitapp
+        INFOPLIST_KEY_WKApplication_InterfaceOrientation: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp: true
+        INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.watchnotetaker
+        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: true
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: "WatchNoteTaker records voice notes for transcription."
+    entitlements:
+      path: WatchNoteTaker/WatchNoteTaker.entitlements
+      properties:
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.watchnotetaker
+        com.apple.developer.icloud-services:
+          - CloudDocuments
+        com.apple.developer.ubiquity-container-identifiers:
+          - iCloud.com.watchnotetaker
+
+  WatchNoteTakerTests:
+    type: bundle.unit-test
+    platform: watchOS
+    sources:
+      - WatchNoteTakerTests
+    dependencies:
+      - target: WatchNoteTaker
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.watchnotetaker.tests
+        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: true

@@ -107,7 +107,7 @@ final class NoteStoreTests: XCTestCase {
 }
 
 /// A testable NoteStore that writes to a local temp directory instead of iCloud
-final class TestableNoteStore: NoteStoring {
+final class TestableNoteStore: NoteStoring, @unchecked Sendable {
     private let testDirectory: URL
     private let fileManager = FileManager.default
 

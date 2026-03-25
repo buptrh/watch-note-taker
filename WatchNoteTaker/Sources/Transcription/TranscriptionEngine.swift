@@ -1,71 +1,50 @@
 import AVFoundation
-import Speech
+import WhisperKit
 
 final class TranscriptionEngine: Transcribing, @unchecked Sendable {
 
-    private let recognizer: SFSpeechRecognizer?
+    private var whisperKit: WhisperKit?
+    private let modelName: String
 
-    init(locale: Locale = Locale(identifier: "en-US")) {
-        self.recognizer = SFSpeechRecognizer(locale: locale)
-        self.recognizer?.defaultTaskHint = .dictation
+    init(modelName: String = "openai_whisper-tiny") {
+        self.modelName = modelName
     }
 
     func transcribe(buffer: AVAudioPCMBuffer) async throws -> String {
-        guard let recognizer, recognizer.isAvailable else {
+        let kit = try await getOrCreateWhisperKit()
+
+        let floatArray = bufferToFloatArray(buffer)
+        guard !floatArray.isEmpty else {
+            throw TranscriptionError.emptyResult
+        }
+
+        let results = try await kit.transcribe(audioArray: floatArray)
+
+        guard let result = results.first, !result.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw TranscriptionError.emptyResult
+        }
+
+        return result.text.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func getOrCreateWhisperKit() async throws -> WhisperKit {
+        if let existing = whisperKit {
+            return existing
+        }
+
+        do {
+            let kit = try await WhisperKit(model: modelName)
+            whisperKit = kit
+            return kit
+        } catch {
             throw TranscriptionError.notAvailable
         }
-
-        let status = SFSpeechRecognizer.authorizationStatus()
-        if status != .authorized {
-            throw TranscriptionError.notAuthorized
-        }
-
-        let request = SFSpeechAudioBufferRecognitionRequest()
-        request.requiresOnDeviceRecognition = true
-        request.shouldReportPartialResults = false
-        request.addPreconditionCheck()
-
-        request.append(buffer)
-        request.endAudio()
-
-        let result: String = try await withCheckedThrowingContinuation { continuation in
-            var hasResumed = false
-
-            recognizer.recognitionTask(with: request) { result, error in
-                guard !hasResumed else { return }
-
-                if let error {
-                    hasResumed = true
-                    continuation.resume(throwing: TranscriptionError.recognitionFailed(error.localizedDescription))
-                    return
-                }
-
-                if let result, result.isFinal {
-                    hasResumed = true
-                    let text = result.bestTranscription.formattedString
-                    if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        continuation.resume(throwing: TranscriptionError.emptyResult)
-                    } else {
-                        continuation.resume(returning: text)
-                    }
-                }
-            }
-        }
-
-        return result
     }
 
-    static func requestAuthorization() async -> Bool {
-        await withCheckedContinuation { continuation in
-            SFSpeechRecognizer.requestAuthorization { status in
-                continuation.resume(returning: status == .authorized)
-            }
-        }
-    }
-}
-
-private extension SFSpeechAudioBufferRecognitionRequest {
-    func addPreconditionCheck() {
-        // Placeholder for any future pre-checks on the request
+    private func bufferToFloatArray(_ buffer: AVAudioPCMBuffer) -> [Float] {
+        guard let channelData = buffer.floatChannelData else { return [] }
+        let frameLength = Int(buffer.frameLength)
+        let floats = Array(UnsafeBufferPointer(start: channelData[0], count: frameLength))
+        return floats
     }
 }
