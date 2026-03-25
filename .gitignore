@@ -2,11 +2,9 @@
 DerivedData/
 *.xcresult
 
-# Simulator artifacts
-simulator_demo.mp4
+# Simulator artifacts (raw/intermediate)
 simulator_screenshot.png
 state_*.png
-demo_screenshots/
 
 # macOS
 .DS_Store
