@@ -3,7 +3,7 @@ import SwiftUI
 struct RecordingView: View {
     @Bindable var viewModel: RecordingViewModel
 
-    private static let confirmationThreshold: TimeInterval = 1.5
+    private static let confirmationThreshold: TimeInterval = 5.0
 
     private enum DisplayState {
         case ready
@@ -50,7 +50,7 @@ struct RecordingView: View {
         case .processing:
             ProcessingIndicator()
         case .confirmation:
-            ConfirmationIndicator()
+            ConfirmationIndicator(text: viewModel.lastTranscribedText)
         case .error(let message):
             ErrorIndicator(message: message)
         }

@@ -14,42 +14,33 @@ final class DemoFlowTest: XCTestCase {
         // State 1: Ready
         let readyText = app.staticTexts["Ready"]
         XCTAssertTrue(readyText.waitForExistence(timeout: 5))
-        let screenshot1 = XCUIScreen.main.screenshot()
-        let attach1 = XCTAttachment(screenshot: screenshot1)
-        attach1.name = "1_Ready"
-        attach1.lifetime = .keepAlways
-        add(attach1)
+        sleep(1)
+        screenshot("1_Ready")
 
         // Tap to start recording
         app.tap()
-        sleep(1)
+        sleep(2)
+        screenshot("2_Recording")
 
-        // State 2: Recording
-        let screenshot2 = XCUIScreen.main.screenshot()
-        let attach2 = XCTAttachment(screenshot: screenshot2)
-        attach2.name = "2_Recording"
-        attach2.lifetime = .keepAlways
-        add(attach2)
-
-        // Tap to stop recording
+        // Tap to stop — triggers transcription + save
         app.tap()
         sleep(1)
+        screenshot("3_Processing")
 
-        // State 3: Processing
-        let screenshot3 = XCUIScreen.main.screenshot()
-        let attach3 = XCTAttachment(screenshot: screenshot3)
-        attach3.name = "3_Processing"
-        attach3.lifetime = .keepAlways
-        add(attach3)
-
-        // Wait for transcription + save to complete
+        // Wait for pipeline to complete and show saved text
         sleep(3)
+        screenshot("4_Saved")
 
-        // State 4: Done (back to Ready, possibly with confirmation)
-        let screenshot4 = XCUIScreen.main.screenshot()
-        let attach4 = XCTAttachment(screenshot: screenshot4)
-        attach4.name = "4_Done"
-        attach4.lifetime = .keepAlways
-        add(attach4)
+        // Wait a bit more to show text is visible
+        sleep(2)
+        screenshot("5_SavedWithText")
+    }
+
+    private func screenshot(_ name: String) {
+        let shot = XCUIScreen.main.screenshot()
+        let attachment = XCTAttachment(screenshot: shot)
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
     }
 }

@@ -8,6 +8,7 @@ final class RecordingViewModel: RecordingToggleable {
     private(set) var state: RecordingState = .idle
     private(set) var errorMessage: String?
     private(set) var lastCaptureTimestamp: Date?
+    private(set) var lastTranscribedText: String?
 
     private let audioRecorder: any AudioRecording
     private let transcriptionEngine: any Transcribing
@@ -64,6 +65,7 @@ final class RecordingViewModel: RecordingToggleable {
                 try noteStore.save(entry: entry, for: now)
 
                 lastCaptureTimestamp = now
+                lastTranscribedText = text
                 state = .idle
             } catch {
                 state = .idle
