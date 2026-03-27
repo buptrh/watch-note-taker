@@ -9,35 +9,52 @@
 /* Begin PBXBuildFile section */
 		00B5E40EFAACEF80DCDD6FB7 /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39DA965D02EFC7308722A29 /* RecordingView.swift */; };
 		015C75FEAC4608B32DE48F35 /* ConfirmationIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6851620EF580AA8DC0690882 /* ConfirmationIndicator.swift */; };
-		0AD231A16F0217550809F4C1 /* ActionButtonIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAD12B6B3E4FBF7BB3A18B3 /* ActionButtonIntent.swift */; };
+		03FBB263CBC7E452E0D4BABC /* TranscriptionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CB3A3E30DBD198AD0B2BDE /* TranscriptionError.swift */; };
+		043ACB6FB8D466F0FCA29657 /* AudioRecorderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211279053D9EF0974CAF0C16 /* AudioRecorderError.swift */; };
 		0E4B0654F0E9034225E21865 /* RecordingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB768559465C8D105B6B30A /* RecordingViewModelTests.swift */; };
+		1593F0AA101F6CAEFDF7B036 /* Transcribing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C5EFA0D2FE5746EB439594 /* Transcribing.swift */; };
+		1DB73635FD7A5ED5099A10E5 /* NoteStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BE5126FBCCB4248E56A6F1 /* NoteStoreError.swift */; };
+		2B800944461E463A9BA2E01B /* RecordingToggleable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D545B4DC030D2EB9957215B /* RecordingToggleable.swift */; };
 		2D9513135226BBBBD3C417C6 /* MockRecordingToggleable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BCF5DA2792750C90C7BE22F /* MockRecordingToggleable.swift */; };
-		33222AF69F93189F46B00CA9 /* RecordingToggleable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 693500C69F01F70729C3633D /* RecordingToggleable.swift */; };
-		34EF39DEEE61385F6B79C744 /* RecordingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED34420B4583FE71C410467 /* RecordingViewModel.swift */; };
-		36F26A7CA3BBF1DB02BE5FD6 /* AudioRecorderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728594D7E60BCBF9AC29FD22 /* AudioRecorderError.swift */; };
-		3ECF0D01BC60A19CD36A06D4 /* AudioRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF37240096924CBB8D8403D0 /* AudioRecording.swift */; };
 		4685D9EDE9B7DAA36032D83B /* ActionButtonIntentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83160A7330554086FE7EBF8F /* ActionButtonIntentTests.swift */; };
+		480ABB8F6C5C4BFEC8A43918 /* AudioRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 716FC6BF259EF0E4B4768E6F /* AudioRecording.swift */; };
 		487025E62A4EE5139697E2F5 /* MockTranscriptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BAAB63A982294E2725D1EA6 /* MockTranscriptionEngine.swift */; };
 		49BEF78D895E04E72815D9A8 /* ErrorIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A416D13562C09D975C886A65 /* ErrorIndicator.swift */; };
+		4E370EFADEE6E013918E36F2 /* TranscriptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425AEA9E64E4466378509BF7 /* TranscriptionEngine.swift */; };
+		51A1FBBEEF014859B2A85678 /* ActionButtonIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B5403C82633A8F771C4E4E /* ActionButtonIntent.swift */; };
 		525A1C8275FC1282F44193CD /* MarkdownFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED1F6169522DD4F383EAC8 /* MarkdownFormatterTests.swift */; };
-		54746CF5E154DC2886E1F9F7 /* NoteStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63764866697FE1474F0654C1 /* NoteStoreError.swift */; };
-		6D11993EF6CFFA026E602CBB /* NoteStoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C8C977E84E4FEC67C31769 /* NoteStoring.swift */; };
+		5AE6CC5D2ECACCDA886DAF55 /* PhoneApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1170AF6283AB10C7D7FE84 /* PhoneApp.swift */; };
+		5F71C9C2586713F577AF1794 /* Transcribing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C5EFA0D2FE5746EB439594 /* Transcribing.swift */; };
+		604F5961E1EDDEC7C6432437 /* NoteStoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3459B7A1BC86817DE927F2E0 /* NoteStoring.swift */; };
+		67F9DEF492C205B610D67290 /* PhoneRecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E376BA456E09F1993FBB97A /* PhoneRecordingView.swift */; };
 		6F1EDAFEE53C3A4521FB8F08 /* DemoFlowTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB0AB35F3F6B8248317C9D5 /* DemoFlowTest.swift */; };
+		7177A68D7BCC4EF603FC3E47 /* RecordingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B33034161EDA8675101CC5F /* RecordingViewModel.swift */; };
+		7620B3534576B4DDE30BE552 /* NoteStoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3459B7A1BC86817DE927F2E0 /* NoteStoring.swift */; };
 		77B1CCC7B6D05182F4A189A1 /* MockAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6323F3D855E09CB171DCA62 /* MockAudioRecorder.swift */; };
-		7E4817BF62307CCC31B2FC57 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830FAB3C45EF704FFAF99F17 /* AudioRecorder.swift */; };
 		7EF029B5C8A1D6235FAD01AE /* WatchNoteTakerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB175E0EDC82B4774736C2CF /* WatchNoteTakerApp.swift */; };
-		855A1A5468AA04C97CCD43D2 /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5EEEB6C92BD69EF3B02ABA /* MarkdownFormatter.swift */; };
+		838F2A1BA97919E062EDCD2A /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BDAF1590D3ECFC876D0A79 /* MarkdownFormatter.swift */; };
 		86CBDEF41F8E369D7F85EBF2 /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = 236845C524B6409B34C78785 /* WhisperKit */; };
+		8A86637483CA108F78D41017 /* ActionButtonIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B5403C82633A8F771C4E4E /* ActionButtonIntent.swift */; };
+		8E5DFCA49CB1821427BE370A /* NoteStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BE5126FBCCB4248E56A6F1 /* NoteStoreError.swift */; };
+		9103DDAC8F9AF46BBB68D58B /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BDAF1590D3ECFC876D0A79 /* MarkdownFormatter.swift */; };
+		92A48B83ED8C6897F539EFC7 /* RecordingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97430E3750310F2DC4756663 /* RecordingState.swift */; };
+		A3BBEB19D88797896F502DA6 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEDD635996F8B2509399DF3 /* AudioRecorder.swift */; };
 		A426E5D480EFF3E634EAF5AE /* NoteStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4182372D0C1688769A8182F7 /* NoteStoreTests.swift */; };
-		A5A83A7B902B7A49698207A1 /* TranscriptionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6753A117A0808253A45A56FE /* TranscriptionError.swift */; };
+		A74607336CDFE5F9A55036D4 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEDD635996F8B2509399DF3 /* AudioRecorder.swift */; };
 		A8FC5E8D433CE1C5B85B2344 /* RecordingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D0439F90FCBEAAFD4927F5 /* RecordingIndicator.swift */; };
+		A97CD23E567E0EAB4C6B5B46 /* AudioRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 716FC6BF259EF0E4B4768E6F /* AudioRecording.swift */; };
 		A9CD8E2A76F511E9B03F5FF8 /* ProcessingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10D2A5C384D2301033BC60E /* ProcessingIndicator.swift */; };
-		ABDDB827AC4D5B9112D49BE1 /* RecordingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F724418291B92850D72E5A88 /* RecordingState.swift */; };
-		C2D8DE141298546E8AA0C0C0 /* TranscriptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7304095A9ABEA1998D68C5 /* TranscriptionEngine.swift */; };
+		AA6FFF114F9D25516A6D80B0 /* RecordingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97430E3750310F2DC4756663 /* RecordingState.swift */; };
+		B6456617644A0520FD5E1994 /* AudioRecorderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211279053D9EF0974CAF0C16 /* AudioRecorderError.swift */; };
+		B9D90BDF0381F382FF007CCE /* TranscriptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425AEA9E64E4466378509BF7 /* TranscriptionEngine.swift */; };
 		D03A1968D5CCA8EF0238A4C3 /* ReadyIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C84FC692AC67C00DC3CFC7 /* ReadyIndicator.swift */; };
-		DDCECC409714954C3BD9E3FC /* Transcribing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4E8C85AE2F5CDB0F52D7A4 /* Transcribing.swift */; };
-		DFDD3D4AB9191E6ED38F5F39 /* NoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D8D561B5ACA730D5E9B8FDE /* NoteStore.swift */; };
+		D138BC95E07D4B5C4391E523 /* TranscriptionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CB3A3E30DBD198AD0B2BDE /* TranscriptionError.swift */; };
+		D2D3F45F893EAE016EC49DAE /* NoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B63C53E7C3F5A50B21330B8 /* NoteStore.swift */; };
+		E4D97ABBF894B42DD5E3C7A6 /* NoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B63C53E7C3F5A50B21330B8 /* NoteStore.swift */; };
+		E8FA9EDDD8B69361CFD9D44A /* RecordingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B33034161EDA8675101CC5F /* RecordingViewModel.swift */; };
+		E9CD08577BD99DEB1133E08F /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = F26959D9A7ECCD0512DB8F3E /* WhisperKit */; };
 		EDE60AF6B4470A207855BDD6 /* MockTranscriptionForDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DCF524937B7CA0BFD0473B6 /* MockTranscriptionForDemo.swift */; };
+		EE802871912DD6B00DC1943D /* RecordingToggleable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D545B4DC030D2EB9957215B /* RecordingToggleable.swift */; };
 		EF85AA0A688791D19CF6F0FD /* MockNoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 624C68A84B11F07CF758D02B /* MockNoteStore.swift */; };
 		F30A46743F335D4716C5B248 /* MockAudioRecorderForDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD726454AC309079B680AFAE /* MockAudioRecorderForDemo.swift */; };
 /* End PBXBuildFile section */
@@ -60,45 +77,56 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		08BE5126FBCCB4248E56A6F1 /* NoteStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteStoreError.swift; sourceTree = "<group>"; };
+		13C5EFA0D2FE5746EB439594 /* Transcribing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transcribing.swift; sourceTree = "<group>"; };
+		16BDAF1590D3ECFC876D0A79 /* MarkdownFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownFormatter.swift; sourceTree = "<group>"; };
 		1BAAB63A982294E2725D1EA6 /* MockTranscriptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTranscriptionEngine.swift; sourceTree = "<group>"; };
+		211279053D9EF0974CAF0C16 /* AudioRecorderError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderError.swift; sourceTree = "<group>"; };
+		2D545B4DC030D2EB9957215B /* RecordingToggleable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingToggleable.swift; sourceTree = "<group>"; };
+		3459B7A1BC86817DE927F2E0 /* NoteStoring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteStoring.swift; sourceTree = "<group>"; };
 		36C84FC692AC67C00DC3CFC7 /* ReadyIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadyIndicator.swift; sourceTree = "<group>"; };
+		38B5403C82633A8F771C4E4E /* ActionButtonIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonIntent.swift; sourceTree = "<group>"; };
+		3B33034161EDA8675101CC5F /* RecordingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingViewModel.swift; sourceTree = "<group>"; };
+		3E376BA456E09F1993FBB97A /* PhoneRecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneRecordingView.swift; sourceTree = "<group>"; };
 		4182372D0C1688769A8182F7 /* NoteStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteStoreTests.swift; sourceTree = "<group>"; };
+		425AEA9E64E4466378509BF7 /* TranscriptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionEngine.swift; sourceTree = "<group>"; };
 		43D0439F90FCBEAAFD4927F5 /* RecordingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingIndicator.swift; sourceTree = "<group>"; };
+		4B63C53E7C3F5A50B21330B8 /* NoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteStore.swift; sourceTree = "<group>"; };
 		58592AC8AA7D9B8CFEEFF388 /* WatchNoteTaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchNoteTaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		5C4E8C85AE2F5CDB0F52D7A4 /* Transcribing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transcribing.swift; sourceTree = "<group>"; };
 		624C68A84B11F07CF758D02B /* MockNoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNoteStore.swift; sourceTree = "<group>"; };
-		63764866697FE1474F0654C1 /* NoteStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteStoreError.swift; sourceTree = "<group>"; };
-		6753A117A0808253A45A56FE /* TranscriptionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionError.swift; sourceTree = "<group>"; };
+		63C6E30B489412167DC4D921 /* WatchNoteTakerPhone.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WatchNoteTakerPhone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6851620EF580AA8DC0690882 /* ConfirmationIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationIndicator.swift; sourceTree = "<group>"; };
-		693500C69F01F70729C3633D /* RecordingToggleable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingToggleable.swift; sourceTree = "<group>"; };
 		6DCF524937B7CA0BFD0473B6 /* MockTranscriptionForDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTranscriptionForDemo.swift; sourceTree = "<group>"; };
-		728594D7E60BCBF9AC29FD22 /* AudioRecorderError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderError.swift; sourceTree = "<group>"; };
+		716FC6BF259EF0E4B4768E6F /* AudioRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecording.swift; sourceTree = "<group>"; };
 		81ED1F6169522DD4F383EAC8 /* MarkdownFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownFormatterTests.swift; sourceTree = "<group>"; };
-		830FAB3C45EF704FFAF99F17 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		83160A7330554086FE7EBF8F /* ActionButtonIntentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonIntentTests.swift; sourceTree = "<group>"; };
-		8B7304095A9ABEA1998D68C5 /* TranscriptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionEngine.swift; sourceTree = "<group>"; };
-		8D8D561B5ACA730D5E9B8FDE /* NoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteStore.swift; sourceTree = "<group>"; };
-		8ED34420B4583FE71C410467 /* RecordingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingViewModel.swift; sourceTree = "<group>"; };
 		94E88085D333F1AB6118C404 /* WatchNoteTaker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchNoteTaker.entitlements; sourceTree = "<group>"; };
-		96C8C977E84E4FEC67C31769 /* NoteStoring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteStoring.swift; sourceTree = "<group>"; };
+		97430E3750310F2DC4756663 /* RecordingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingState.swift; sourceTree = "<group>"; };
 		9BCF5DA2792750C90C7BE22F /* MockRecordingToggleable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRecordingToggleable.swift; sourceTree = "<group>"; };
 		A416D13562C09D975C886A65 /* ErrorIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorIndicator.swift; sourceTree = "<group>"; };
 		AB175E0EDC82B4774736C2CF /* WatchNoteTakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNoteTakerApp.swift; sourceTree = "<group>"; };
-		ABAD12B6B3E4FBF7BB3A18B3 /* ActionButtonIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonIntent.swift; sourceTree = "<group>"; };
 		B6323F3D855E09CB171DCA62 /* MockAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioRecorder.swift; sourceTree = "<group>"; };
+		B9CB3A3E30DBD198AD0B2BDE /* TranscriptionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionError.swift; sourceTree = "<group>"; };
 		BAB0AB35F3F6B8248317C9D5 /* DemoFlowTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoFlowTest.swift; sourceTree = "<group>"; };
-		BF37240096924CBB8D8403D0 /* AudioRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecording.swift; sourceTree = "<group>"; };
+		BC1170AF6283AB10C7D7FE84 /* PhoneApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneApp.swift; sourceTree = "<group>"; };
 		D10D2A5C384D2301033BC60E /* ProcessingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingIndicator.swift; sourceTree = "<group>"; };
-		DA5EEEB6C92BD69EF3B02ABA /* MarkdownFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownFormatter.swift; sourceTree = "<group>"; };
 		E10067350EA9C65E4BFA946E /* WatchNoteTakerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WatchNoteTakerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F39DA965D02EFC7308722A29 /* RecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingView.swift; sourceTree = "<group>"; };
-		F724418291B92850D72E5A88 /* RecordingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingState.swift; sourceTree = "<group>"; };
 		F94C5254F3C40D0B6E44BBBD /* WatchNoteTakerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WatchNoteTakerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD726454AC309079B680AFAE /* MockAudioRecorderForDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioRecorderForDemo.swift; sourceTree = "<group>"; };
+		FDEDD635996F8B2509399DF3 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		FEB768559465C8D105B6B30A /* RecordingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5D921A518EA1066A5D25120C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9CD08577BD99DEB1133E08F /* WhisperKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7593FB67CF5616ED90243171 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -118,27 +146,27 @@
 			path = Transcription;
 			sourceTree = "<group>";
 		};
-		1559BCCDD30DFC4599BBCD95 /* Formatting */ = {
+		15B17032BAE6718C39040322 /* Transcription */ = {
 			isa = PBXGroup;
 			children = (
-				DA5EEEB6C92BD69EF3B02ABA /* MarkdownFormatter.swift */,
+				425AEA9E64E4466378509BF7 /* TranscriptionEngine.swift */,
+				B9CB3A3E30DBD198AD0B2BDE /* TranscriptionError.swift */,
 			);
-			path = Formatting;
-			sourceTree = "<group>";
-		};
-		1694EF256B215D2F04B5D3BC /* Store */ = {
-			isa = PBXGroup;
-			children = (
-				8D8D561B5ACA730D5E9B8FDE /* NoteStore.swift */,
-				63764866697FE1474F0654C1 /* NoteStoreError.swift */,
-			);
-			path = Store;
+			path = Transcription;
 			sourceTree = "<group>";
 		};
 		16D60BC8CE6C139FAD4548DB /* ActionButton */ = {
 			isa = PBXGroup;
 			children = (
 				83160A7330554086FE7EBF8F /* ActionButtonIntentTests.swift */,
+			);
+			path = ActionButton;
+			sourceTree = "<group>";
+		};
+		1FD2C103ACFB4F9389BB8040 /* ActionButton */ = {
+			isa = PBXGroup;
+			children = (
+				38B5403C82633A8F771C4E4E /* ActionButtonIntent.swift */,
 			);
 			path = ActionButton;
 			sourceTree = "<group>";
@@ -164,15 +192,13 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
-		3C646A9DF2212512FDAE660A /* Protocols */ = {
+		442068100EBBCC206B10C5A0 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
-				BF37240096924CBB8D8403D0 /* AudioRecording.swift */,
-				96C8C977E84E4FEC67C31769 /* NoteStoring.swift */,
-				693500C69F01F70729C3633D /* RecordingToggleable.swift */,
-				5C4E8C85AE2F5CDB0F52D7A4 /* Transcribing.swift */,
+				FDEDD635996F8B2509399DF3 /* AudioRecorder.swift */,
+				211279053D9EF0974CAF0C16 /* AudioRecorderError.swift */,
 			);
-			path = Protocols;
+			path = Audio;
 			sourceTree = "<group>";
 		};
 		473669620C3B5C25A3DD1C25 /* Formatting */ = {
@@ -191,46 +217,69 @@
 			path = Audio;
 			sourceTree = "<group>";
 		};
-		568D380793D212D207DEBF31 /* ActionButton */ = {
+		5C23892925D86DD42A043984 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				ABAD12B6B3E4FBF7BB3A18B3 /* ActionButtonIntent.swift */,
+				1FD2C103ACFB4F9389BB8040 /* ActionButton */,
+				442068100EBBCC206B10C5A0 /* Audio */,
+				A66B52833DDD1888747B2C4C /* Formatting */,
+				89B455CD663117A91ADF9AA2 /* Models */,
+				D8C9508302E031216934D41A /* Protocols */,
+				89E15C153F352AAF4D962936 /* Store */,
+				15B17032BAE6718C39040322 /* Transcription */,
+				786F5446AE16D6ECA14FF51C /* ViewModels */,
 			);
-			path = ActionButton;
+			path = Shared;
 			sourceTree = "<group>";
 		};
-		6714AEB58021A2C01BAFC765 /* Models */ = {
+		6442610F0594BC623FE76820 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				F724418291B92850D72E5A88 /* RecordingState.swift */,
+				3E376BA456E09F1993FBB97A /* PhoneRecordingView.swift */,
 			);
-			path = Models;
+			path = Views;
+			sourceTree = "<group>";
+		};
+		786F5446AE16D6ECA14FF51C /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				3B33034161EDA8675101CC5F /* RecordingViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		79B45CEB007267E38E795960 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				58592AC8AA7D9B8CFEEFF388 /* WatchNoteTaker.app */,
+				63C6E30B489412167DC4D921 /* WatchNoteTakerPhone.app */,
 				F94C5254F3C40D0B6E44BBBD /* WatchNoteTakerTests.xctest */,
 				E10067350EA9C65E4BFA946E /* WatchNoteTakerUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		9AA3E66866B14A1441B296EE /* ViewModels */ = {
+		89B455CD663117A91ADF9AA2 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				8ED34420B4583FE71C410467 /* RecordingViewModel.swift */,
+				97430E3750310F2DC4756663 /* RecordingState.swift */,
 			);
-			path = ViewModels;
+			path = Models;
+			sourceTree = "<group>";
+		};
+		89E15C153F352AAF4D962936 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				4B63C53E7C3F5A50B21330B8 /* NoteStore.swift */,
+				08BE5126FBCCB4248E56A6F1 /* NoteStoreError.swift */,
+			);
+			path = Store;
 			sourceTree = "<group>";
 		};
 		A062994AC617C047FF60C8C4 /* Transcription */ = {
 			isa = PBXGroup;
 			children = (
 				6DCF524937B7CA0BFD0473B6 /* MockTranscriptionForDemo.swift */,
-				8B7304095A9ABEA1998D68C5 /* TranscriptionEngine.swift */,
-				6753A117A0808253A45A56FE /* TranscriptionError.swift */,
 			);
 			path = Transcription;
 			sourceTree = "<group>";
@@ -262,6 +311,14 @@
 			path = WatchNoteTaker;
 			sourceTree = "<group>";
 		};
+		A66B52833DDD1888747B2C4C /* Formatting */ = {
+			isa = PBXGroup;
+			children = (
+				16BDAF1590D3ECFC876D0A79 /* MarkdownFormatter.swift */,
+			);
+			path = Formatting;
+			sourceTree = "<group>";
+		};
 		ABF1216356583DD0DB73D9F6 /* WatchNoteTakerTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -278,8 +335,6 @@
 		AF638E41E47BCF6C6E18178E /* Audio */ = {
 			isa = PBXGroup;
 			children = (
-				830FAB3C45EF704FFAF99F17 /* AudioRecorder.swift */,
-				728594D7E60BCBF9AC29FD22 /* AudioRecorderError.swift */,
 				FD726454AC309079B680AFAE /* MockAudioRecorderForDemo.swift */,
 			);
 			path = Audio;
@@ -294,27 +349,51 @@
 			path = Store;
 			sourceTree = "<group>";
 		};
+		B4F07A77ADE2EE96EACB24C2 /* WatchNoteTakerPhone */ = {
+			isa = PBXGroup;
+			children = (
+				CDCE4DAC305351B1785035AD /* App */,
+				6442610F0594BC623FE76820 /* Views */,
+			);
+			path = WatchNoteTakerPhone;
+			sourceTree = "<group>";
+		};
+		CDCE4DAC305351B1785035AD /* App */ = {
+			isa = PBXGroup;
+			children = (
+				BC1170AF6283AB10C7D7FE84 /* PhoneApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
 		D06A7C817CE0B94C5F04E3DB = {
 			isa = PBXGroup;
 			children = (
+				5C23892925D86DD42A043984 /* Shared */,
 				A47C700479C4ADAD71292C7A /* WatchNoteTaker */,
+				B4F07A77ADE2EE96EACB24C2 /* WatchNoteTakerPhone */,
 				ABF1216356583DD0DB73D9F6 /* WatchNoteTakerTests */,
 				F6C2A1517174590CDB4ED4E8 /* WatchNoteTakerUITests */,
 				79B45CEB007267E38E795960 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
+		D8C9508302E031216934D41A /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				716FC6BF259EF0E4B4768E6F /* AudioRecording.swift */,
+				3459B7A1BC86817DE927F2E0 /* NoteStoring.swift */,
+				2D545B4DC030D2EB9957215B /* RecordingToggleable.swift */,
+				13C5EFA0D2FE5746EB439594 /* Transcribing.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
 		F4D2BA7D3E1619E67768F1E3 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				568D380793D212D207DEBF31 /* ActionButton */,
 				AF638E41E47BCF6C6E18178E /* Audio */,
-				1559BCCDD30DFC4599BBCD95 /* Formatting */,
-				6714AEB58021A2C01BAFC765 /* Models */,
-				3C646A9DF2212512FDAE660A /* Protocols */,
-				1694EF256B215D2F04B5D3BC /* Store */,
 				A062994AC617C047FF60C8C4 /* Transcription */,
-				9AA3E66866B14A1441B296EE /* ViewModels */,
 				A1EFC6EACD01882BFBA97C4B /* Views */,
 			);
 			path = Sources;
@@ -348,6 +427,25 @@
 			);
 			productName = WatchNoteTaker;
 			productReference = 58592AC8AA7D9B8CFEEFF388 /* WatchNoteTaker.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BC5171E6AB426984A6C644A1 /* WatchNoteTakerPhone */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 97048A99E179FBD5F08E15EE /* Build configuration list for PBXNativeTarget "WatchNoteTakerPhone" */;
+			buildPhases = (
+				F2D62D656113FE9C4C372E6C /* Sources */,
+				5D921A518EA1066A5D25120C /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WatchNoteTakerPhone;
+			packageProductDependencies = (
+				F26959D9A7ECCD0512DB8F3E /* WhisperKit */,
+			);
+			productName = WatchNoteTakerPhone;
+			productReference = 63C6E30B489412167DC4D921 /* WatchNoteTakerPhone.app */;
 			productType = "com.apple.product-type.application";
 		};
 		BE42980EA5A83367161916E8 /* WatchNoteTakerUITests */ = {
@@ -395,6 +493,14 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
+					2D888CE2EEE28528AA09E63D = {
+						DevelopmentTeam = 67ZYPV5TLL;
+						ProvisioningStyle = Automatic;
+					};
+					BC5171E6AB426984A6C644A1 = {
+						DevelopmentTeam = 67ZYPV5TLL;
+						ProvisioningStyle = Automatic;
+					};
 					BE42980EA5A83367161916E8 = {
 						TestTargetID = 2D888CE2EEE28528AA09E63D;
 					};
@@ -418,6 +524,7 @@
 			projectRoot = "";
 			targets = (
 				2D888CE2EEE28528AA09E63D /* WatchNoteTaker */,
+				BC5171E6AB426984A6C644A1 /* WatchNoteTakerPhone */,
 				C84D80A2D9F02A67F0FE67F0 /* WatchNoteTakerTests */,
 				BE42980EA5A83367161916E8 /* WatchNoteTakerUITests */,
 			);
@@ -429,28 +536,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0AD231A16F0217550809F4C1 /* ActionButtonIntent.swift in Sources */,
-				7E4817BF62307CCC31B2FC57 /* AudioRecorder.swift in Sources */,
-				36F26A7CA3BBF1DB02BE5FD6 /* AudioRecorderError.swift in Sources */,
-				3ECF0D01BC60A19CD36A06D4 /* AudioRecording.swift in Sources */,
+				51A1FBBEEF014859B2A85678 /* ActionButtonIntent.swift in Sources */,
+				A3BBEB19D88797896F502DA6 /* AudioRecorder.swift in Sources */,
+				B6456617644A0520FD5E1994 /* AudioRecorderError.swift in Sources */,
+				A97CD23E567E0EAB4C6B5B46 /* AudioRecording.swift in Sources */,
 				015C75FEAC4608B32DE48F35 /* ConfirmationIndicator.swift in Sources */,
 				49BEF78D895E04E72815D9A8 /* ErrorIndicator.swift in Sources */,
-				855A1A5468AA04C97CCD43D2 /* MarkdownFormatter.swift in Sources */,
+				9103DDAC8F9AF46BBB68D58B /* MarkdownFormatter.swift in Sources */,
 				F30A46743F335D4716C5B248 /* MockAudioRecorderForDemo.swift in Sources */,
 				EDE60AF6B4470A207855BDD6 /* MockTranscriptionForDemo.swift in Sources */,
-				DFDD3D4AB9191E6ED38F5F39 /* NoteStore.swift in Sources */,
-				54746CF5E154DC2886E1F9F7 /* NoteStoreError.swift in Sources */,
-				6D11993EF6CFFA026E602CBB /* NoteStoring.swift in Sources */,
+				D2D3F45F893EAE016EC49DAE /* NoteStore.swift in Sources */,
+				1DB73635FD7A5ED5099A10E5 /* NoteStoreError.swift in Sources */,
+				7620B3534576B4DDE30BE552 /* NoteStoring.swift in Sources */,
 				A9CD8E2A76F511E9B03F5FF8 /* ProcessingIndicator.swift in Sources */,
 				D03A1968D5CCA8EF0238A4C3 /* ReadyIndicator.swift in Sources */,
 				A8FC5E8D433CE1C5B85B2344 /* RecordingIndicator.swift in Sources */,
-				ABDDB827AC4D5B9112D49BE1 /* RecordingState.swift in Sources */,
-				33222AF69F93189F46B00CA9 /* RecordingToggleable.swift in Sources */,
+				AA6FFF114F9D25516A6D80B0 /* RecordingState.swift in Sources */,
+				2B800944461E463A9BA2E01B /* RecordingToggleable.swift in Sources */,
 				00B5E40EFAACEF80DCDD6FB7 /* RecordingView.swift in Sources */,
-				34EF39DEEE61385F6B79C744 /* RecordingViewModel.swift in Sources */,
-				DDCECC409714954C3BD9E3FC /* Transcribing.swift in Sources */,
-				C2D8DE141298546E8AA0C0C0 /* TranscriptionEngine.swift in Sources */,
-				A5A83A7B902B7A49698207A1 /* TranscriptionError.swift in Sources */,
+				E8FA9EDDD8B69361CFD9D44A /* RecordingViewModel.swift in Sources */,
+				1593F0AA101F6CAEFDF7B036 /* Transcribing.swift in Sources */,
+				4E370EFADEE6E013918E36F2 /* TranscriptionEngine.swift in Sources */,
+				D138BC95E07D4B5C4391E523 /* TranscriptionError.swift in Sources */,
 				7EF029B5C8A1D6235FAD01AE /* WatchNoteTakerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -475,6 +582,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F1EDAFEE53C3A4521FB8F08 /* DemoFlowTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F2D62D656113FE9C4C372E6C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A86637483CA108F78D41017 /* ActionButtonIntent.swift in Sources */,
+				A74607336CDFE5F9A55036D4 /* AudioRecorder.swift in Sources */,
+				043ACB6FB8D466F0FCA29657 /* AudioRecorderError.swift in Sources */,
+				480ABB8F6C5C4BFEC8A43918 /* AudioRecording.swift in Sources */,
+				838F2A1BA97919E062EDCD2A /* MarkdownFormatter.swift in Sources */,
+				E4D97ABBF894B42DD5E3C7A6 /* NoteStore.swift in Sources */,
+				8E5DFCA49CB1821427BE370A /* NoteStoreError.swift in Sources */,
+				604F5961E1EDDEC7C6432437 /* NoteStoring.swift in Sources */,
+				5AE6CC5D2ECACCDA886DAF55 /* PhoneApp.swift in Sources */,
+				67F9DEF492C205B610D67290 /* PhoneRecordingView.swift in Sources */,
+				92A48B83ED8C6897F539EFC7 /* RecordingState.swift in Sources */,
+				EE802871912DD6B00DC1943D /* RecordingToggleable.swift in Sources */,
+				7177A68D7BCC4EF603FC3E47 /* RecordingViewModel.swift in Sources */,
+				5F71C9C2586713F577AF1794 /* Transcribing.swift in Sources */,
+				B9D90BDF0381F382FF007CCE /* TranscriptionEngine.swift in Sources */,
+				03FBB263CBC7E452E0D4BABC /* TranscriptionError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,11 +694,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = watchos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -621,10 +751,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = watchos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -637,6 +767,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = WatchNoteTaker/WatchNoteTaker.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 67ZYPV5TLL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "WatchNoteTaker records voice notes for transcription.";
 				INFOPLIST_KEY_WKApplication_InterfaceOrientation = UIInterfaceOrientationPortrait;
@@ -650,11 +783,35 @@
 			};
 			name = Debug;
 		};
+		7B8E2C9723CC7C2AEF8861B3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 67ZYPV5TLL;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "WatchNoteTaker records voice notes for transcription.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.watchnotetaker;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 		848F0DFED8F347E3D05C7EB9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = WatchNoteTaker/WatchNoteTaker.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 67ZYPV5TLL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "WatchNoteTaker records voice notes for transcription.";
 				INFOPLIST_KEY_WKApplication_InterfaceOrientation = UIInterfaceOrientationPortrait;
@@ -703,6 +860,27 @@
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WatchNoteTaker.app/WatchNoteTaker";
+			};
+			name = Debug;
+		};
+		EDA9A7B1E2DAE324187B431A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 67ZYPV5TLL;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "WatchNoteTaker records voice notes for transcription.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.watchnotetaker;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -755,6 +933,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		97048A99E179FBD5F08E15EE /* Build configuration list for PBXNativeTarget "WatchNoteTakerPhone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDA9A7B1E2DAE324187B431A /* Debug */,
+				7B8E2C9723CC7C2AEF8861B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		C2985639B0D5CF1810AFB64E /* Build configuration list for PBXNativeTarget "WatchNoteTaker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -779,6 +966,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		236845C524B6409B34C78785 /* WhisperKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4257A2C4C60E32DA134565FA /* XCRemoteSwiftPackageReference "WhisperKit" */;
+			productName = WhisperKit;
+		};
+		F26959D9A7ECCD0512DB8F3E /* WhisperKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4257A2C4C60E32DA134565FA /* XCRemoteSwiftPackageReference "WhisperKit" */;
 			productName = WhisperKit;

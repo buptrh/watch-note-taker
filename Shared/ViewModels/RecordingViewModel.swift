@@ -24,6 +24,10 @@ final class RecordingViewModel: RecordingToggleable {
         self.noteStore = noteStore
     }
 
+    func prewarmModel() async {
+        await transcriptionEngine.prewarm()
+    }
+
     func toggleRecording() {
         switch state {
         case .idle:
@@ -69,7 +73,7 @@ final class RecordingViewModel: RecordingToggleable {
                 state = .idle
             } catch {
                 state = .idle
-                errorMessage = "Capture failed: \(error.localizedDescription)"
+                errorMessage = "[\(type(of: error))] \(error)"
             }
         }
     }

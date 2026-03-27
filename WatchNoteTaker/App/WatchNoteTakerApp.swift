@@ -1,4 +1,5 @@
 import SwiftUI
+import AppIntents
 
 @main
 struct WatchNoteTakerApp: App {
@@ -13,6 +14,12 @@ struct WatchNoteTakerApp: App {
             RecordingView(viewModel: viewModel)
                 .onAppear {
                     ActionButtonIntent.viewModel = viewModel
+                }
+                .task {
+                    // Register shortcuts with the system
+                    ActionButtonShortcutsProvider.updateAppShortcutParameters()
+                    // Preload WhisperKit model on launch so first transcription is fast
+                    await viewModel.prewarmModel()
                 }
         }
     }

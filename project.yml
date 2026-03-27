@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: com.watchnotetaker
   deploymentTarget:
     watchOS: "10.0"
+    iOS: "17.0"
   xcodeVersion: "16.0"
 
 packages:
@@ -15,12 +16,21 @@ targets:
     type: application
     platform: watchOS
     sources:
-      - WatchNoteTaker
+      - path: Shared
+      - path: WatchNoteTaker
+        excludes:
+          - "Resources/**"
+    resources:
+      - path: WatchNoteTaker/Resources/whisper-model.bundle
+        buildPhase: resources
     dependencies:
       - package: WhisperKit
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.watchnotetaker.watchkitapp
+        DEVELOPMENT_TEAM: 67ZYPV5TLL
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Development"
         INFOPLIST_KEY_WKApplication_InterfaceOrientation: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp: true
         INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.watchnotetaker
@@ -29,13 +39,29 @@ targets:
         INFOPLIST_KEY_NSMicrophoneUsageDescription: "WatchNoteTaker records voice notes for transcription."
     entitlements:
       path: WatchNoteTaker/WatchNoteTaker.entitlements
-      properties:
-        com.apple.developer.icloud-container-identifiers:
-          - iCloud.com.watchnotetaker
-        com.apple.developer.icloud-services:
-          - CloudDocuments
-        com.apple.developer.ubiquity-container-identifiers:
-          - iCloud.com.watchnotetaker
+
+  WatchNoteTakerPhone:
+    type: application
+    platform: iOS
+    sources:
+      - path: Shared
+      - path: WatchNoteTakerPhone
+    resources:
+      - path: WatchNoteTaker/Resources/whisper-model.bundle
+        buildPhase: resources
+    dependencies:
+      - package: WhisperKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.watchnotetaker
+        DEVELOPMENT_TEAM: 67ZYPV5TLL
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Development"
+        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: true
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: "WatchNoteTaker records voice notes for transcription."
+        INFOPLIST_KEY_UILaunchScreen_Generation: true
+        TARGETED_DEVICE_FAMILY: 1
 
   WatchNoteTakerTests:
     type: bundle.unit-test

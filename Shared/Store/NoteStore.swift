@@ -28,20 +28,20 @@ final class NoteStore: NoteStoring, @unchecked Sendable {
     }
 
     private func resolveContainer() throws -> URL {
-        #if targetEnvironment(simulator)
-        // Simulator has no iCloud — use local documents directory
-        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        return documentsURL
-        #else
-        guard let url = fileManager.url(forUbiquityContainerIdentifier: containerIdentifier) else {
+        // Try iCloud first, fall back to local storage
+        if let url = fileManager.url(forUbiquityContainerIdentifier: containerIdentifier) {
+            let documentsURL = url.appendingPathComponent("Documents", isDirectory: true)
+            if !fileManager.fileExists(atPath: documentsURL.path) {
+                try fileManager.createDirectory(at: documentsURL, withIntermediateDirectories: true)
+            }
+            return documentsURL
+        }
+
+        // No iCloud — use local documents directory
+        guard let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
             throw NoteStoreError.containerUnavailable
         }
-        let documentsURL = url.appendingPathComponent("Documents", isDirectory: true)
-        if !fileManager.fileExists(atPath: documentsURL.path) {
-            try fileManager.createDirectory(at: documentsURL, withIntermediateDirectories: true)
-        }
         return documentsURL
-        #endif
     }
 
     private func createNewFile(entry: String, date: Date, at url: URL) throws {

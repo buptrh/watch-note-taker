@@ -12,6 +12,8 @@ final class SimulatorTranscriptionEngine: Transcribing, @unchecked Sendable {
         "The quick brown fox jumps over the lazy dog",
     ]
 
+    func prewarm() async {}
+
     func transcribe(buffer: AVAudioPCMBuffer) async throws -> String {
         // Simulate transcription delay
         try await Task.sleep(for: .milliseconds(800))
