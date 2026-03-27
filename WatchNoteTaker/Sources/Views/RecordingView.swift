@@ -77,7 +77,10 @@ struct RecordingView: View {
                 liveTranscript: viewModel.liveTranscript
             )
         case .processing:
-            ProcessingIndicator(existingText: viewModel.liveTranscript.isEmpty ? nil : viewModel.liveTranscript)
+            ProcessingIndicator(
+                existingText: viewModel.liveTranscript.isEmpty ? nil : viewModel.liveTranscript,
+                isModelReady: viewModel.isModelReady
+            )
         case .confirmation:
             ConfirmationIndicator(
                 text: viewModel.lastTranscribedText,

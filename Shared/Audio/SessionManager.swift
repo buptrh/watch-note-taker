@@ -3,9 +3,8 @@ import Foundation
 #if os(watchOS)
 import WatchKit
 
-/// Keeps the watch app alive during recording.
-/// Uses extended runtime session (no HealthKit entitlement needed).
-final class SessionManager: @unchecked Sendable {
+/// Keeps the watch app alive and display active during recording.
+final class SessionManager: NSObject, @unchecked Sendable, WKExtendedRuntimeSessionDelegate {
 
     private var extendedSession: WKExtendedRuntimeSession?
     private var isActive = false
@@ -14,6 +13,7 @@ final class SessionManager: @unchecked Sendable {
         guard !isActive else { return }
 
         let session = WKExtendedRuntimeSession()
+        session.delegate = self
         session.start()
         extendedSession = session
         isActive = true
@@ -24,6 +24,20 @@ final class SessionManager: @unchecked Sendable {
         extendedSession?.invalidate()
         extendedSession = nil
         isActive = false
+    }
+
+    // MARK: - WKExtendedRuntimeSessionDelegate
+
+    func extendedRuntimeSessionDidStart(_ extendedRuntimeSession: WKExtendedRuntimeSession) {}
+
+    func extendedRuntimeSessionWillExpire(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
+        // Session about to expire — stop gracefully
+        stopKeepAlive()
+    }
+
+    func extendedRuntimeSession(_ extendedRuntimeSession: WKExtendedRuntimeSession, didInvalidateWith reason: WKExtendedRuntimeSessionInvalidationReason, error: (any Error)?) {
+        isActive = false
+        extendedSession = nil
     }
 }
 

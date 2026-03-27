@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProcessingIndicator: View {
     var existingText: String?
+    var isModelReady: Bool = true
 
     @State private var rotation: Double = 0
 
@@ -21,7 +22,7 @@ struct ProcessingIndicator: View {
                     }
                 }
 
-            Text("Transcribing...")
+            Text(isModelReady ? "Transcribing..." : "Loading AI model...")
                 .font(DS.Font.heading(size: 13))
                 .foregroundStyle(DS.amber)
 
