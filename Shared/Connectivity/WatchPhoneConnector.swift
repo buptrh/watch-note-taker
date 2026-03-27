@@ -3,14 +3,14 @@ import WatchConnectivity
 import AVFoundation
 
 /// Handles WatchConnectivity between watch and phone.
-/// Watch side: sends audio chunks. Phone side: receives and processes them.
+/// Hybrid delivery: sendMessage when reachable, transferFile when not.
 final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, @unchecked Sendable {
 
     static let shared = WatchPhoneConnector()
 
     @Published var isReachable = false
 
-    /// Called on the phone when an audio chunk arrives from the watch
+    /// Called on the phone when an audio chunk arrives (real-time or queued file)
     var onAudioChunkReceived: ((Data, Date) -> Void)?
 
     /// Called on the watch when transcription text comes back from the phone
@@ -27,45 +27,73 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         session.activate()
     }
 
-    // MARK: - Watch → Phone: Send audio chunk
+    // MARK: - Watch → Phone: Send audio chunk (hybrid)
 
+    /// Send audio chunk — uses sendMessage if reachable, transferFile if not
     func sendAudioChunk(_ audioData: Data, recordingDate: Date) {
-        guard WCSession.default.isReachable else { return }
+        let session = WCSession.default
 
-        let message: [String: Any] = [
-            "type": "audioChunk",
-            "audio": audioData,
-            "date": recordingDate.timeIntervalSince1970
-        ]
-
-        WCSession.default.sendMessage(message, replyHandler: nil) { error in
-            print("Send audio chunk failed: \(error.localizedDescription)")
+        if session.isReachable {
+            // Real-time delivery
+            let message: [String: Any] = [
+                "type": "audioChunk",
+                "audio": audioData,
+                "date": recordingDate.timeIntervalSince1970
+            ]
+            session.sendMessage(message, replyHandler: nil) { [weak self] error in
+                // sendMessage failed — fall back to transferFile
+                print("sendMessage failed, queueing file: \(error.localizedDescription)")
+                self?.queueAudioFile(audioData, recordingDate: recordingDate)
+            }
+        } else {
+            // Phone not reachable — queue for later
+            queueAudioFile(audioData, recordingDate: recordingDate)
         }
     }
 
-    /// Send final chunk marker so phone knows recording is done
+    /// Queue audio as a file transfer (delivered when phone app opens)
+    private func queueAudioFile(_ audioData: Data, recordingDate: Date) {
+        let tempURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("chunk_\(Int(recordingDate.timeIntervalSince1970))_\(UUID().uuidString.prefix(8)).wav")
+
+        do {
+            try audioData.write(to: tempURL)
+            let metadata: [String: Any] = [
+                "type": "audioChunk",
+                "date": recordingDate.timeIntervalSince1970
+            ]
+            WCSession.default.transferFile(tempURL, metadata: metadata)
+        } catch {
+            print("Failed to queue audio file: \(error)")
+        }
+    }
+
+    /// Send final chunk marker
     func sendRecordingComplete(date: Date) {
-        guard WCSession.default.isReachable else { return }
+        let session = WCSession.default
 
-        let message: [String: Any] = [
-            "type": "recordingComplete",
-            "date": date.timeIntervalSince1970
-        ]
-
-        WCSession.default.sendMessage(message, replyHandler: nil)
+        if session.isReachable {
+            let message: [String: Any] = [
+                "type": "recordingComplete",
+                "date": date.timeIntervalSince1970
+            ]
+            session.sendMessage(message, replyHandler: nil)
+        }
+        // If not reachable, phone will process queued files when it opens
     }
 
     // MARK: - Phone → Watch: Send transcription back
 
     func sendTranscriptionToWatch(_ text: String) {
-        guard WCSession.default.isReachable else { return }
+        let session = WCSession.default
 
-        let message: [String: Any] = [
-            "type": "transcription",
-            "text": text
-        ]
-
-        WCSession.default.sendMessage(message, replyHandler: nil)
+        if session.isReachable {
+            let message: [String: Any] = [
+                "type": "transcription",
+                "text": text
+            ]
+            session.sendMessage(message, replyHandler: nil)
+        }
     }
 
     // MARK: - WCSessionDelegate
@@ -84,7 +112,29 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         }
     }
 
+    // Real-time message received
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
+        handleMessage(message)
+    }
+
+    // File transfer received (queued delivery)
+    func session(_ session: WCSession, didReceive file: WCSessionFile) {
+        guard let metadata = file.metadata,
+              let type = metadata["type"] as? String,
+              type == "audioChunk",
+              let timestamp = metadata["date"] as? TimeInterval else { return }
+
+        let date = Date(timeIntervalSince1970: timestamp)
+
+        do {
+            let audioData = try Data(contentsOf: file.fileURL)
+            onAudioChunkReceived?(audioData, date)
+        } catch {
+            print("Failed to read transferred file: \(error)")
+        }
+    }
+
+    private func handleMessage(_ message: [String: Any]) {
         guard let type = message["type"] as? String else { return }
 
         switch type {
@@ -93,10 +143,6 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
                   let timestamp = message["date"] as? TimeInterval else { return }
             let date = Date(timeIntervalSince1970: timestamp)
             onAudioChunkReceived?(audioData, date)
-
-        case "recordingComplete":
-            // Phone can finalize processing if needed
-            break
 
         case "transcription":
             guard let text = message["text"] as? String else { return }
@@ -107,7 +153,7 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         }
     }
 
-    // MARK: - iOS only delegate methods
+    // MARK: - iOS only
 
     #if os(iOS)
     func sessionDidBecomeInactive(_ session: WCSession) {}

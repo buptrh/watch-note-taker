@@ -19,8 +19,8 @@ struct WatchNoteTakerApp: App {
             transcriptionEngine: engine,
             noteStore: store
         )
-        // Default to phone relay if available
-        vm.usePhoneRelay = true
+        // Prefer phone relay if available, falls back to local automatically
+        vm.preferPhoneRelay = true
         _viewModel = State(initialValue: vm)
     }
 
