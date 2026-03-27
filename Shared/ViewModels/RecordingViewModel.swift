@@ -38,6 +38,9 @@ final class RecordingViewModel: RecordingToggleable {
     /// If true, transcribe chunks progressively during local recording (phone app)
     var useLocalChunking: Bool = false
 
+    /// Whether the transcription model is loaded and ready
+    var isModelReady: Bool { transcriptionEngine.isModelReady }
+
     init(
         audioRecorder: AudioRecorder,
         transcriptionEngine: any Transcribing,
@@ -215,7 +218,36 @@ final class RecordingViewModel: RecordingToggleable {
         if liveTranscript.isEmpty {
             liveTranscript = text
         } else {
-            liveTranscript += " " + text
+            liveTranscript += chunkSeparator(before: text) + text
+        }
+    }
+
+    /// Pick an appropriate separator between transcript chunks.
+    /// Chinese text gets a period (。) if the previous chunk didn't end with punctuation.
+    /// Latin text gets a space.
+    private func chunkSeparator(before nextChunk: String) -> String {
+        let lastChar = liveTranscript.last ?? " "
+        let endsPunctuation = "。，！？.!?,;；：:、\n".contains(lastChar)
+
+        // If already ends with punctuation, just add a space for Latin or nothing for CJK
+        if endsPunctuation {
+            return isCJK(nextChunk) ? "" : " "
+        }
+
+        // No punctuation at the end — add appropriate separator
+        if isCJK(liveTranscript.suffix(1)) || isCJK(nextChunk.prefix(1)) {
+            return "。"
+        }
+        return ". "
+    }
+
+    private func isCJK(_ text: some StringProtocol) -> Bool {
+        text.unicodeScalars.contains { scalar in
+            (0x4E00...0x9FFF).contains(scalar.value) ||   // CJK Unified
+            (0x3400...0x4DBF).contains(scalar.value) ||   // CJK Extension A
+            (0x3000...0x303F).contains(scalar.value) ||   // CJK Symbols
+            (0x3040...0x309F).contains(scalar.value) ||   // Hiragana
+            (0x30A0...0x30FF).contains(scalar.value)      // Katakana
         }
     }
 }

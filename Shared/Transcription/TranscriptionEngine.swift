@@ -8,6 +8,8 @@ final class TranscriptionEngine: Transcribing, @unchecked Sendable {
     /// Language code for transcription. "auto" = auto-detect, "zh" = Chinese, "en" = English, etc.
     var language: String = "auto"
 
+    var isModelReady: Bool { whisperKit != nil }
+
     func prewarm() async {
         _ = try? await getOrCreateWhisperKit()
     }

@@ -59,6 +59,8 @@ targets:
     resources:
       - path: Shared/Theme/Fonts
         buildPhase: resources
+      - path: WatchNoteTaker/Resources/whisper-model.bundle
+        buildPhase: resources
     dependencies:
       - package: WhisperKit
     settings:

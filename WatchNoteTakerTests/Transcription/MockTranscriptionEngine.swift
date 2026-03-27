@@ -7,6 +7,8 @@ final class MockTranscriptionEngine: Transcribing, @unchecked Sendable {
     var textToReturn: String = "Test transcription"
     var errorToThrow: Error?
 
+    var isModelReady: Bool { true }
+
     func prewarm() async {}
 
     func transcribe(buffer: AVAudioPCMBuffer) async throws -> String {

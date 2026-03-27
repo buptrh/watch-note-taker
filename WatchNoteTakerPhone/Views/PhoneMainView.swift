@@ -212,40 +212,18 @@ struct PhoneRecordingView: View {
                 .frame(height: 60)
                 .padding(.horizontal, DS.Space.lg)
 
-            // Live transcript with two-tone effect
+            // Live transcript
             if !viewModel.liveTranscript.isEmpty {
                 ScrollView {
-                    twoToneTranscript(viewModel.liveTranscript)
+                    Text(viewModel.liveTranscript)
+                        .font(DS.Font.body(size: 17))
+                        .foregroundStyle(.white)
+                        .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(DS.Space.md)
                 }
                 .frame(maxHeight: 300)
                 .padding(.horizontal, DS.Space.lg)
-            }
-        }
-    }
-
-    /// Renders transcript with confirmed text in white and trailing words in faded amber
-    private func twoToneTranscript(_ text: String) -> some View {
-        let words = text.split(separator: " ", omittingEmptySubsequences: true)
-        let fadeCount = min(8, words.count)
-        let confirmedCount = words.count - fadeCount
-
-        return Group {
-            if words.isEmpty {
-                Text("")
-            } else {
-                let confirmed = words.prefix(confirmedCount).joined(separator: " ")
-                let streaming = words.suffix(fadeCount).joined(separator: " ")
-
-                (Text(confirmed.isEmpty ? "" : confirmed + " ")
-                    .font(DS.Font.body(size: 17))
-                    .foregroundColor(.white)
-                +
-                Text(streaming)
-                    .font(DS.Font.body(size: 17))
-                    .foregroundColor(DS.amberGlow.opacity(0.6)))
-                .multilineTextAlignment(.leading)
             }
         }
     }
@@ -258,7 +236,7 @@ struct PhoneRecordingView: View {
                 .scaleEffect(1.5)
                 .tint(DS.amber)
 
-            Text("Transcribing...")
+            Text(viewModel.isModelReady ? "Transcribing..." : "Loading AI model...")
                 .font(DS.Font.heading(size: 17))
                 .foregroundStyle(DS.amber)
 

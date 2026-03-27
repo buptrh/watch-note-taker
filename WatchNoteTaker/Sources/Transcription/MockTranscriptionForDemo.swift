@@ -12,6 +12,8 @@ final class SimulatorTranscriptionEngine: Transcribing, @unchecked Sendable {
         "The quick brown fox jumps over the lazy dog",
     ]
 
+    var isModelReady: Bool { true }
+
     func prewarm() async {}
 
     func transcribe(buffer: AVAudioPCMBuffer) async throws -> String {
