@@ -113,6 +113,7 @@ struct PhoneRecordingView: View {
                         .font(.system(size: 18))
                         .foregroundStyle(DS.slateLight)
                 }
+                .accessibilityIdentifier("settingsButton")
             }
         }
         .padding(.horizontal, DS.Space.lg)

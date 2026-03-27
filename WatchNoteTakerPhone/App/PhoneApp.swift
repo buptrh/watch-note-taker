@@ -82,6 +82,10 @@ struct WatchNoteTakerPhoneApp: App {
         vm.useLocalChunking = true
         viewModel = vm
 
-        showOnboarding = !settings.onboardingComplete
+        if CommandLine.arguments.contains("--skip-onboarding") {
+            showOnboarding = false
+        } else {
+            showOnboarding = !settings.onboardingComplete
+        }
     }
 }

@@ -82,6 +82,19 @@ targets:
           - DMSans-SemiBold.ttf
           - JetBrainsMono-Regular.ttf
 
+  WatchNoteTakerPhoneUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - WatchNoteTakerPhoneUITests
+    dependencies:
+      - target: WatchNoteTakerPhone
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.watchnotetaker.phoneuitests
+        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: true
+
   WatchNoteTakerTests:
     type: bundle.unit-test
     platform: watchOS

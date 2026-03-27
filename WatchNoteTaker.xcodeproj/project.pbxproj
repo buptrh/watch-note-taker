@@ -37,6 +37,7 @@
 		4E370EFADEE6E013918E36F2 /* TranscriptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425AEA9E64E4466378509BF7 /* TranscriptionEngine.swift */; };
 		51A1FBBEEF014859B2A85678 /* ActionButtonIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B5403C82633A8F771C4E4E /* ActionButtonIntent.swift */; };
 		525A1C8275FC1282F44193CD /* MarkdownFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED1F6169522DD4F383EAC8 /* MarkdownFormatterTests.swift */; };
+		539C4F34E6C0502398128155 /* PhoneDemoFlowTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2AD6D93C08CBF59E7EF7DF /* PhoneDemoFlowTest.swift */; };
 		592948387E866AB7F5CF749A /* PhoneTranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6985A04CCE4D12DA074C11A9 /* PhoneTranscriptionService.swift */; };
 		5AE26C5F3B693C6FD3B40612 /* VaultNoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A9EB477C89D46CE3FBC3F /* VaultNoteStore.swift */; };
 		5AE6CC5D2ECACCDA886DAF55 /* PhoneApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1170AF6283AB10C7D7FE84 /* PhoneApp.swift */; };
@@ -111,6 +112,13 @@
 			remoteGlobalIDString = 2D888CE2EEE28528AA09E63D;
 			remoteInfo = WatchNoteTaker;
 		};
+		8CF3278E8C73504949CF4AAB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EF998D9404C656506E0DE8B2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BC5171E6AB426984A6C644A1;
+			remoteInfo = WatchNoteTakerPhone;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -125,6 +133,7 @@
 		1BAAB63A982294E2725D1EA6 /* MockTranscriptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTranscriptionEngine.swift; sourceTree = "<group>"; };
 		211279053D9EF0974CAF0C16 /* AudioRecorderError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderError.swift; sourceTree = "<group>"; };
 		2D545B4DC030D2EB9957215B /* RecordingToggleable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingToggleable.swift; sourceTree = "<group>"; };
+		31CDB5F293793583C839E789 /* WatchNoteTakerPhoneUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = WatchNoteTakerPhoneUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3459B7A1BC86817DE927F2E0 /* NoteStoring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteStoring.swift; sourceTree = "<group>"; };
 		36C84FC692AC67C00DC3CFC7 /* ReadyIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadyIndicator.swift; sourceTree = "<group>"; };
 		38B5403C82633A8F771C4E4E /* ActionButtonIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonIntent.swift; sourceTree = "<group>"; };
@@ -164,6 +173,7 @@
 		A7E273BA16D6CB164A9E02F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AB175E0EDC82B4774736C2CF /* WatchNoteTakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNoteTakerApp.swift; sourceTree = "<group>"; };
 		AE36C61F49DAA6ECC65DCA10 /* PhoneMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneMainView.swift; sourceTree = "<group>"; };
+		AF2AD6D93C08CBF59E7EF7DF /* PhoneDemoFlowTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneDemoFlowTest.swift; sourceTree = "<group>"; };
 		B6323F3D855E09CB171DCA62 /* MockAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioRecorder.swift; sourceTree = "<group>"; };
 		B9CB3A3E30DBD198AD0B2BDE /* TranscriptionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionError.swift; sourceTree = "<group>"; };
 		BAB0AB35F3F6B8248317C9D5 /* DemoFlowTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoFlowTest.swift; sourceTree = "<group>"; };
@@ -211,6 +221,14 @@
 				E0D7606132771C317CB88059 /* VaultWriter.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		0BEF475C5FCB8403EA36FBC6 /* WatchNoteTakerPhoneUITests */ = {
+			isa = PBXGroup;
+			children = (
+				AF2AD6D93C08CBF59E7EF7DF /* PhoneDemoFlowTest.swift */,
+			);
+			path = WatchNoteTakerPhoneUITests;
 			sourceTree = "<group>";
 		};
 		13D4230A62F29AD298713F7F /* Transcription */ = {
@@ -355,6 +373,7 @@
 			children = (
 				58592AC8AA7D9B8CFEEFF388 /* WatchNoteTaker.app */,
 				63C6E30B489412167DC4D921 /* WatchNoteTakerPhone.app */,
+				31CDB5F293793583C839E789 /* WatchNoteTakerPhoneUITests.xctest */,
 				F94C5254F3C40D0B6E44BBBD /* WatchNoteTakerTests.xctest */,
 				E10067350EA9C65E4BFA946E /* WatchNoteTakerUITests.xctest */,
 			);
@@ -516,6 +535,7 @@
 				5C23892925D86DD42A043984 /* Shared */,
 				A47C700479C4ADAD71292C7A /* WatchNoteTaker */,
 				B4F07A77ADE2EE96EACB24C2 /* WatchNoteTakerPhone */,
+				0BEF475C5FCB8403EA36FBC6 /* WatchNoteTakerPhoneUITests */,
 				ABF1216356583DD0DB73D9F6 /* WatchNoteTakerTests */,
 				F6C2A1517174590CDB4ED4E8 /* WatchNoteTakerUITests */,
 				79B45CEB007267E38E795960 /* Products */,
@@ -574,6 +594,24 @@
 			productName = WatchNoteTaker;
 			productReference = 58592AC8AA7D9B8CFEEFF388 /* WatchNoteTaker.app */;
 			productType = "com.apple.product-type.application";
+		};
+		5F0154ABED52F3D17EB88E8E /* WatchNoteTakerPhoneUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FEEC01D6763F0F8FF8796CB0 /* Build configuration list for PBXNativeTarget "WatchNoteTakerPhoneUITests" */;
+			buildPhases = (
+				C8C48A2DE03ED3D9F7F4F2DD /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CC461AF253B475E2247B65D5 /* PBXTargetDependency */,
+			);
+			name = WatchNoteTakerPhoneUITests;
+			packageProductDependencies = (
+			);
+			productName = WatchNoteTakerPhoneUITests;
+			productReference = 31CDB5F293793583C839E789 /* WatchNoteTakerPhoneUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		BC5171E6AB426984A6C644A1 /* WatchNoteTakerPhone */ = {
 			isa = PBXNativeTarget;
@@ -644,6 +682,9 @@
 						DevelopmentTeam = 67ZYPV5TLL;
 						ProvisioningStyle = Automatic;
 					};
+					5F0154ABED52F3D17EB88E8E = {
+						TestTargetID = BC5171E6AB426984A6C644A1;
+					};
 					BC5171E6AB426984A6C644A1 = {
 						DevelopmentTeam = 67ZYPV5TLL;
 						ProvisioningStyle = Automatic;
@@ -675,6 +716,7 @@
 			targets = (
 				2D888CE2EEE28528AA09E63D /* WatchNoteTaker */,
 				BC5171E6AB426984A6C644A1 /* WatchNoteTakerPhone */,
+				5F0154ABED52F3D17EB88E8E /* WatchNoteTakerPhoneUITests */,
 				C84D80A2D9F02A67F0FE67F0 /* WatchNoteTakerTests */,
 				BE42980EA5A83367161916E8 /* WatchNoteTakerUITests */,
 			);
@@ -766,6 +808,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C8C48A2DE03ED3D9F7F4F2DD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				539C4F34E6C0502398128155 /* PhoneDemoFlowTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DD0E6FB089428987940838D6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -824,6 +874,11 @@
 			isa = PBXTargetDependency;
 			target = 2D888CE2EEE28528AA09E63D /* WatchNoteTaker */;
 			targetProxy = 025B9D0E789EF3928F91A7C0 /* PBXContainerItemProxy */;
+		};
+		CC461AF253B475E2247B65D5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BC5171E6AB426984A6C644A1 /* WatchNoteTakerPhone */;
+			targetProxy = 8CF3278E8C73504949CF4AAB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -907,6 +962,24 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		545A4772603044709736D74B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.watchnotetaker.phoneuitests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WatchNoteTakerPhone;
 			};
 			name = Debug;
 		};
@@ -1052,6 +1125,24 @@
 			};
 			name = Release;
 		};
+		BAE095CFC71FCF71098DEA54 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.watchnotetaker.phoneuitests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WatchNoteTakerPhone;
+			};
+			name = Release;
+		};
 		D016CAD914B85A3C155F1A42 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1157,6 +1248,15 @@
 			buildConfigurations = (
 				71840520539A8805190B0578 /* Debug */,
 				848F0DFED8F347E3D05C7EB9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FEEC01D6763F0F8FF8796CB0 /* Build configuration list for PBXNativeTarget "WatchNoteTakerPhoneUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				545A4772603044709736D74B /* Debug */,
+				BAE095CFC71FCF71098DEA54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
