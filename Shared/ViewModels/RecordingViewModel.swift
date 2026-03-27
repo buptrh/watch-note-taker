@@ -21,12 +21,16 @@ final class RecordingViewModel: RecordingToggleable {
     /// Running transcript — appended as chunks are transcribed
     private(set) var liveTranscript: String = ""
 
+    /// Recording duration in seconds — updates every second while recording
+    private(set) var recordingDuration: TimeInterval = 0
+
     private let audioRecorder: AudioRecorder
     private let transcriptionEngine: any Transcribing
     private let noteStore: any NoteStoring
     private let sessionManager = SessionManager()
     private let connector = WatchPhoneConnector.shared
     private var recordingStartTime: Date?
+    private var durationTimer: Timer?
 
     /// If true, prefer streaming to iPhone when reachable
     var preferPhoneRelay: Bool = false
@@ -71,7 +75,16 @@ final class RecordingViewModel: RecordingToggleable {
         lastTranscribedText = nil
         liveTranscript = ""
         recordingStartTime = Date()
+        recordingDuration = 0
         state = .recording
+
+        // Start duration timer
+        durationTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                guard let self, let start = self.recordingStartTime else { return }
+                self.recordingDuration = Date().timeIntervalSince(start)
+            }
+        }
 
         let phoneReachable = preferPhoneRelay && connector.isReachable
         let useStreaming = phoneReachable || useLocalChunking
@@ -107,6 +120,8 @@ final class RecordingViewModel: RecordingToggleable {
     }
 
     private func stopRecording() {
+        durationTimer?.invalidate()
+        durationTimer = nil
         let wasStreaming = activeMode == .phoneStream || activeMode == .phoneChunking
 
         state = .transcribing

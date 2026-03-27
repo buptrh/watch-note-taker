@@ -1,20 +1,48 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+struct PhoneMainView: View {
+    @Bindable var viewModel: RecordingViewModel
+    @ObservedObject var vaultWriter: VaultWriter
+    @ObservedObject var watchService: PhoneTranscriptionService
+    @ObservedObject var history: RecordingHistory
+
+    var body: some View {
+        TabView {
+            PhoneRecordingView(
+                viewModel: viewModel,
+                vaultWriter: vaultWriter,
+                watchService: watchService,
+                history: history
+            )
+            .tabItem {
+                Label("Record", systemImage: "mic.fill")
+            }
+
+            NavigationStack {
+                HistoryView(history: history)
+            }
+            .tabItem {
+                Label("History", systemImage: "clock.arrow.circlepath")
+            }
+        }
+    }
+}
+
 struct PhoneRecordingView: View {
     @Bindable var viewModel: RecordingViewModel
     @ObservedObject var vaultWriter: VaultWriter
     @ObservedObject var watchService: PhoneTranscriptionService
+    @ObservedObject var history: RecordingHistory
     @State private var showFolderPicker = false
 
-    /// True when watching a watch recording (not recording locally)
     private var isWatchMode: Bool {
         watchService.isWatchRecording && viewModel.state == .idle
     }
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 32) {
+            VStack(spacing: 24) {
                 Spacer()
 
                 if isWatchMode {
@@ -23,7 +51,14 @@ struct PhoneRecordingView: View {
                     statusIcon
                     statusText
 
-                    // Show transcript: live during recording, with spinner when processing, scrollable when done
+                    // Recording timer
+                    if viewModel.state == .recording {
+                        Text(formatDuration(viewModel.recordingDuration))
+                            .font(.system(size: 48, weight: .light, design: .monospaced))
+                            .foregroundStyle(.red)
+                    }
+
+                    // Show transcript
                     if !viewModel.liveTranscript.isEmpty || viewModel.state == .transcribing || viewModel.state == .saving {
                         transcriptArea
                     } else if viewModel.lastTranscribedText != nil,
@@ -41,7 +76,7 @@ struct PhoneRecordingView: View {
 
                 if !isWatchMode {
                     recordButton
-                        .padding(.bottom, 40)
+                        .padding(.bottom, 20)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -66,8 +101,30 @@ struct PhoneRecordingView: View {
                     vaultWriter.saveBookmark(for: url)
                 }
             }
+            .onChange(of: viewModel.state) { oldState, newState in
+                // Save to history when recording completes
+                if oldState == .saving && newState == .idle,
+                   let text = viewModel.lastTranscribedText,
+                   !text.isEmpty {
+                    history.add(
+                        text: text,
+                        date: viewModel.lastCaptureTimestamp ?? Date(),
+                        duration: viewModel.recordingDuration
+                    )
+                }
+            }
         }
     }
+
+    // MARK: - Timer formatting
+
+    private func formatDuration(_ seconds: TimeInterval) -> String {
+        let mins = Int(seconds) / 60
+        let secs = Int(seconds) % 60
+        return String(format: "%02d:%02d", mins, secs)
+    }
+
+    // MARK: - Status views
 
     @ViewBuilder
     private var statusIcon: some View {
@@ -130,6 +187,8 @@ struct PhoneRecordingView: View {
         }
     }
 
+    // MARK: - Watch recording
+
     private var watchRecordingView: some View {
         VStack(spacing: 16) {
             Image(systemName: "applewatch.radiowaves.left.and.right")
@@ -167,6 +226,8 @@ struct PhoneRecordingView: View {
         }
     }
 
+    // MARK: - Transcript
+
     private var transcriptArea: some View {
         VStack(spacing: 8) {
             ScrollView {
@@ -177,10 +238,9 @@ struct PhoneRecordingView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(16)
             }
-            .frame(maxHeight: 300)
+            .frame(maxHeight: 250)
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
 
-            // Show processing indicator when still transcribing
             if viewModel.state == .transcribing || viewModel.state == .saving {
                 HStack(spacing: 6) {
                     ProgressView()
@@ -201,6 +261,8 @@ struct PhoneRecordingView: View {
         return viewModel.lastTranscribedText ?? ""
     }
 
+    // MARK: - Error
+
     private func errorView(_ message: String) -> some View {
         ScrollView {
             Text(message)
@@ -211,6 +273,8 @@ struct PhoneRecordingView: View {
         }
         .frame(maxHeight: 100)
     }
+
+    // MARK: - Record button
 
     private var recordButton: some View {
         Button {

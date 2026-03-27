@@ -5,6 +5,7 @@ import AppIntents
 struct WatchNoteTakerPhoneApp: App {
     @StateObject private var vaultWriter = VaultWriter()
     @StateObject private var watchService: PhoneTranscriptionService
+    @StateObject private var history = RecordingHistory()
     @State private var viewModel: RecordingViewModel?
 
     init() {
@@ -20,16 +21,21 @@ struct WatchNoteTakerPhoneApp: App {
     var body: some Scene {
         WindowGroup {
             if let viewModel {
-                PhoneRecordingView(viewModel: viewModel, vaultWriter: vaultWriter, watchService: watchService)
-                    .onAppear {
-                        ActionButtonIntent.viewModel = viewModel
-                        WatchPhoneConnector.shared.activate()
-                    }
-                    .task {
-                        ActionButtonShortcutsProvider.updateAppShortcutParameters()
-                        await viewModel.prewarmModel()
-                        await watchService.prewarm()
-                    }
+                PhoneMainView(
+                    viewModel: viewModel,
+                    vaultWriter: vaultWriter,
+                    watchService: watchService,
+                    history: history
+                )
+                .onAppear {
+                    ActionButtonIntent.viewModel = viewModel
+                    WatchPhoneConnector.shared.activate()
+                }
+                .task {
+                    ActionButtonShortcutsProvider.updateAppShortcutParameters()
+                    await viewModel.prewarmModel()
+                    await watchService.prewarm()
+                }
             } else {
                 ProgressView("Loading...")
                     .onAppear { setupViewModel() }
