@@ -19,10 +19,11 @@ targets:
       - path: Shared
       - path: WatchNoteTaker
         excludes:
-          - "Resources/**"
+          - "Resources"
     resources:
       - path: WatchNoteTaker/Resources/whisper-model.bundle
         buildPhase: resources
+        type: folder
       - path: Shared/Theme/Fonts
         buildPhase: resources
     dependencies:
@@ -56,10 +57,13 @@ targets:
     sources:
       - path: Shared
       - path: WatchNoteTakerPhone
+        excludes:
+          - "Resources"
     resources:
-      - path: Shared/Theme/Fonts
+      - path: WatchNoteTakerPhone/Resources/whisper-model.bundle
         buildPhase: resources
-      - path: WatchNoteTaker/Resources/whisper-model.bundle
+        type: folder
+      - path: Shared/Theme/Fonts
         buildPhase: resources
     dependencies:
       - package: WhisperKit

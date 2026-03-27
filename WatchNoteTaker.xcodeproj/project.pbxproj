@@ -63,7 +63,6 @@
 		8FB5FC4439A390E17C8EF0C9 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B877E514BEF8D75A270D4 /* OnboardingView.swift */; };
 		9103DDAC8F9AF46BBB68D58B /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BDAF1590D3ECFC876D0A79 /* MarkdownFormatter.swift */; };
 		92A48B83ED8C6897F539EFC7 /* RecordingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97430E3750310F2DC4756663 /* RecordingState.swift */; };
-		9867034100EB128EEAAB4C55 /* whisper-model.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 566A6DA49E948C66CD69E96F /* whisper-model.bundle */; };
 		A3BBEB19D88797896F502DA6 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEDD635996F8B2509399DF3 /* AudioRecorder.swift */; };
 		A426E5D480EFF3E634EAF5AE /* NoteStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4182372D0C1688769A8182F7 /* NoteStoreTests.swift */; };
 		A5ABC51610628E5DE0101E3B /* DMSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5FBC8E0DE42300C4563680F5 /* DMSans-Light.ttf */; };
@@ -95,6 +94,8 @@
 		F75763E147B1DF20CFE18CA6 /* DesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720F59A6C3874AA40828DDA4 /* DesignTokens.swift */; };
 		FA5CF6512A519576CD236DF4 /* JetBrainsMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1A7FA4DE75191BF77DD60CF7 /* JetBrainsMono-Regular.ttf */; };
 		FF425C6A0BCD6E47515BFF41 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E48C9923D3BE7C9D45FAA52 /* Localizable.strings */; };
+		AABB001122334455WHISPER2 /* whisper-model.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AABB001122334455WHISPER1 /* whisper-model.bundle */; };
+		AABB001122334455WHISPER3 /* whisper-model.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AABB001122334455WHISPER1 /* whisper-model.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -146,7 +147,6 @@
 		4B63C53E7C3F5A50B21330B8 /* NoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteStore.swift; sourceTree = "<group>"; };
 		4F8A9EB477C89D46CE3FBC3F /* VaultNoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaultNoteStore.swift; sourceTree = "<group>"; };
 		53CDDB0156077F7408761637 /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
-		566A6DA49E948C66CD69E96F /* whisper-model.bundle */ = {isa = PBXFileReference; lastKnownFileType = wrapper.cfbundle; path = "whisper-model.bundle"; sourceTree = "<group>"; };
 		58592AC8AA7D9B8CFEEFF388 /* WatchNoteTaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchNoteTaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FBC8E0DE42300C4563680F5 /* DMSans-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DMSans-Light.ttf"; sourceTree = "<group>"; };
 		624C68A84B11F07CF758D02B /* MockNoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNoteStore.swift; sourceTree = "<group>"; };
@@ -189,6 +189,7 @@
 		FD726454AC309079B680AFAE /* MockAudioRecorderForDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioRecorderForDemo.swift; sourceTree = "<group>"; };
 		FDEDD635996F8B2509399DF3 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		FEB768559465C8D105B6B30A /* RecordingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingViewModelTests.swift; sourceTree = "<group>"; };
+		AABB001122334455WHISPER1 /* whisper-model.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = "whisper-model.bundle"; path = "WatchNoteTaker/Resources/whisper-model.bundle"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -311,14 +312,6 @@
 				B6323F3D855E09CB171DCA62 /* MockAudioRecorder.swift */,
 			);
 			path = Audio;
-			sourceTree = "<group>";
-		};
-		52D0A075FA8DC0FF4999F143 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				566A6DA49E948C66CD69E96F /* whisper-model.bundle */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		5C23892925D86DD42A043984 /* Shared */ = {
@@ -506,7 +499,6 @@
 			children = (
 				A7E273BA16D6CB164A9E02F6 /* Info.plist */,
 				CDCE4DAC305351B1785035AD /* App */,
-				52D0A075FA8DC0FF4999F143 /* Resources */,
 				0272A75C7C2C3BFE6EC7C065 /* Services */,
 				6442610F0594BC623FE76820 /* Views */,
 			);
@@ -735,7 +727,7 @@
 				021D1AB13BD384CBE8E7AFAC /* Localizable.strings in Resources */,
 				D294CA4924EECFCD751864F0 /* Localizable.strings in Resources */,
 				1E8C1D4FBA6DC5446D4CBA57 /* Localizable.strings in Resources */,
-			);
+				AABB001122334455WHISPER2 /* whisper-model.bundle in Resources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F3E76C8E6D3CFD1BB08EFF5E /* Resources */ = {
@@ -749,8 +741,7 @@
 				4DE2DBAB8832633398D027EE /* Localizable.strings in Resources */,
 				315FFA1E61C4B51CE6566C91 /* Localizable.strings in Resources */,
 				FF425C6A0BCD6E47515BFF41 /* Localizable.strings in Resources */,
-				9867034100EB128EEAAB4C55 /* whisper-model.bundle in Resources */,
-			);
+				AABB001122334455WHISPER3 /* whisper-model.bundle in Resources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */

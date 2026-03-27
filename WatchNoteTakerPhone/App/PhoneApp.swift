@@ -44,8 +44,9 @@ struct WatchNoteTakerPhoneApp: App {
                     }
                     .task {
                         ActionButtonShortcutsProvider.updateAppShortcutParameters()
-                        await viewModel.prewarmModel()
-                        await watchService.prewarm()
+                        // Load model in background — don't block recording
+                        async let _ = viewModel.prewarmModel()
+                        async let _ = watchService.prewarm()
                     }
                     .onChange(of: settings.language) { _, newLang in
                         transcriptionEngine?.language = newLang
