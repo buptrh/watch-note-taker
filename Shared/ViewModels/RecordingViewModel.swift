@@ -196,7 +196,7 @@ final class RecordingViewModel: RecordingToggleable {
                     connector.sendRecordingComplete(date: now)
                 }
 
-                lastCaptureTimestamp = now
+                lastCaptureTimestamp = Date()  // Use current time, not recording start
                 lastTranscribedText = fullText
                 let duration = recordingDuration
                 onRecordingSaved?(fullText, now, duration)

@@ -36,6 +36,7 @@ struct ProcessingIndicator: View {
                         .padding(.horizontal, DS.Space.sm)
                 }
                 .frame(maxHeight: 60)
+                .onTapGesture { }
             }
 
             Spacer()
