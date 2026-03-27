@@ -41,6 +41,9 @@ final class RecordingViewModel: RecordingToggleable {
     /// Whether the transcription model is loaded and ready
     var isModelReady: Bool { transcriptionEngine.isModelReady }
 
+    /// Called when a recording is saved successfully (text, date, duration)
+    var onRecordingSaved: ((String, Date, TimeInterval) -> Void)?
+
     init(
         audioRecorder: AudioRecorder,
         transcriptionEngine: any Transcribing,
@@ -185,6 +188,8 @@ final class RecordingViewModel: RecordingToggleable {
 
                 lastCaptureTimestamp = now
                 lastTranscribedText = fullText
+                let duration = recordingDuration
+                onRecordingSaved?(fullText, now, duration)
                 sessionManager.stopKeepAlive()
                 activeMode = nil
                 state = .idle

@@ -69,15 +69,9 @@ struct PhoneRecordingView: View {
                 }
             }
         }
-        .onChange(of: viewModel.state) { oldState, newState in
-            if oldState == .saving && newState == .idle,
-               let text = viewModel.lastTranscribedText,
-               !text.isEmpty {
-                history.add(
-                    text: text,
-                    date: viewModel.lastCaptureTimestamp ?? Date(),
-                    duration: viewModel.recordingDuration
-                )
+        .onAppear {
+            viewModel.onRecordingSaved = { text, date, duration in
+                history.add(text: text, date: date, duration: duration)
             }
         }
     }
