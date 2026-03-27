@@ -48,7 +48,7 @@ struct RecordingView: View {
         case .recording:
             recordingView
         case .processing:
-            ProcessingIndicator()
+            ProcessingIndicator(existingText: viewModel.liveTranscript.isEmpty ? nil : viewModel.liveTranscript)
         case .confirmation:
             ConfirmationIndicator(text: viewModel.lastTranscribedText)
         case .error(let message):
@@ -60,20 +60,6 @@ struct RecordingView: View {
         ScrollView {
             VStack(spacing: 6) {
                 RecordingIndicator()
-
-                // Show active mode
-                if let mode = viewModel.activeMode {
-                    Text(mode.rawValue)
-                        .font(.system(size: 10))
-                        .foregroundStyle(.secondary)
-                }
-
-                // Show chunk count
-                if viewModel.chunksTranscribed > 0 {
-                    Text("\(viewModel.chunksTranscribed) chunks")
-                        .font(.system(size: 10))
-                        .foregroundStyle(.green)
-                }
 
                 // Show live transcript
                 if !viewModel.liveTranscript.isEmpty {

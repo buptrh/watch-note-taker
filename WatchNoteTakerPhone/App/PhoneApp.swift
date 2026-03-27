@@ -4,29 +4,31 @@ import AppIntents
 @main
 struct WatchNoteTakerPhoneApp: App {
     @StateObject private var vaultWriter = VaultWriter()
+    @StateObject private var watchService: PhoneTranscriptionService
     @State private var viewModel: RecordingViewModel?
-    @State private var transcriptionService: PhoneTranscriptionService?
+
+    init() {
+        let vw = VaultWriter()
+        _vaultWriter = StateObject(wrappedValue: vw)
+        _watchService = StateObject(wrappedValue: PhoneTranscriptionService(
+            transcriptionEngine: TranscriptionEngine(),
+            vaultWriter: vw,
+            noteStore: NoteStore()
+        ))
+    }
 
     var body: some Scene {
         WindowGroup {
             if let viewModel {
-                PhoneRecordingView(viewModel: viewModel, vaultWriter: vaultWriter)
+                PhoneRecordingView(viewModel: viewModel, vaultWriter: vaultWriter, watchService: watchService)
                     .onAppear {
                         ActionButtonIntent.viewModel = viewModel
                         WatchPhoneConnector.shared.activate()
-
-                        if transcriptionService == nil {
-                            transcriptionService = PhoneTranscriptionService(
-                                transcriptionEngine: TranscriptionEngine(),
-                                vaultWriter: vaultWriter,
-                                noteStore: NoteStore()
-                            )
-                        }
                     }
                     .task {
                         ActionButtonShortcutsProvider.updateAppShortcutParameters()
                         await viewModel.prewarmModel()
-                        await transcriptionService?.prewarm()
+                        await watchService.prewarm()
                     }
             } else {
                 ProgressView("Loading...")

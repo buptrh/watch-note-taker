@@ -1,19 +1,22 @@
 import Foundation
+import AVFoundation
 
 /// Runs on iPhone. Receives audio chunks from watch, transcribes them,
-/// writes to Obsidian vault, and sends confirmation back to watch.
+/// accumulates text, saves ONE entry when recording completes, and sends text back to watch.
 @MainActor
 final class PhoneTranscriptionService: ObservableObject {
 
-    @Published var isProcessing = false
-    @Published var chunksProcessed = 0
-    @Published var lastText: String?
+    @Published var isWatchRecording = false
+    @Published var isTranscribing = false
+    @Published var liveTranscript: String = ""
+    @Published var chunksProcessed: Int = 0
 
     private let transcriptionEngine: any Transcribing
     private let vaultWriter: VaultWriter
     private let noteStore: any NoteStoring
     private let connector = WatchPhoneConnector.shared
     private let sessionManager = SessionManager()
+    private var recordingDate: Date?
 
     init(transcriptionEngine: any Transcribing, vaultWriter: VaultWriter, noteStore: any NoteStoring) {
         self.transcriptionEngine = transcriptionEngine
@@ -25,6 +28,20 @@ final class PhoneTranscriptionService: ObservableObject {
                 await self?.processChunk(data: data, date: date)
             }
         }
+
+        // Listen for recording complete from watch
+        let existingHandler = connector.onTranscriptionReceived
+        // We need a separate handler for recordingComplete
+        // Override the message handler to also catch recordingComplete
+        NotificationCenter.default.addObserver(
+            forName: .watchRecordingComplete,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            Task { @MainActor in
+                await self?.finalizeRecording()
+            }
+        }
     }
 
     func prewarm() async {
@@ -32,17 +49,23 @@ final class PhoneTranscriptionService: ObservableObject {
     }
 
     private func processChunk(data: Data, date: Date) async {
-        isProcessing = true
+        if !isWatchRecording {
+            isWatchRecording = true
+            recordingDate = date
+            liveTranscript = ""
+            chunksProcessed = 0
+        }
+
+        isTranscribing = true
         sessionManager.startKeepAlive()
 
         guard let tempURL = AudioConverter.wavDataToTempFile(data) else {
-            isProcessing = false
+            isTranscribing = false
             return
         }
         defer { try? FileManager.default.removeItem(at: tempURL) }
 
         do {
-            // Load audio and transcribe
             let audioFile = try AVAudioFile(forReading: tempURL)
             guard let buffer = AVAudioPCMBuffer(
                 pcmFormat: audioFile.processingFormat,
@@ -51,27 +74,51 @@ final class PhoneTranscriptionService: ObservableObject {
             try audioFile.read(into: buffer)
 
             let text = try await transcriptionEngine.transcribe(buffer: buffer)
-            let entry = MarkdownFormatter.formatEntry(text: text, at: date)
-
-            // Write to vault if access is set up, otherwise local
-            if vaultWriter.hasVaultAccess {
-                try vaultWriter.saveToVault(entry: entry, for: date)
-            } else {
-                try noteStore.save(entry: entry, for: date)
-            }
 
             chunksProcessed += 1
-            lastText = text
+            if liveTranscript.isEmpty {
+                liveTranscript = text
+            } else {
+                liveTranscript += " " + text
+            }
 
-            // Send transcription back to watch
+            // Send transcription back to watch for live display
             connector.sendTranscriptionToWatch(text)
         } catch {
             print("Chunk transcription failed: \(error)")
         }
 
-        isProcessing = false
+        isTranscribing = false
+    }
+
+    func finalizeRecording() async {
+        guard isWatchRecording else { return }
+        isWatchRecording = false
+
+        // Wait briefly for any in-flight transcriptions
+        try? await Task.sleep(for: .seconds(1))
+
+        // Save accumulated transcript as ONE entry
+        let date = recordingDate ?? Date()
+        let fullText = liveTranscript
+
+        if !fullText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            let entry = MarkdownFormatter.formatEntry(text: fullText, at: date)
+            do {
+                if vaultWriter.hasVaultAccess {
+                    try vaultWriter.saveToVault(entry: entry, for: date)
+                } else {
+                    try noteStore.save(entry: entry, for: date)
+                }
+            } catch {
+                print("Failed to save watch recording: \(error)")
+            }
+        }
+
         sessionManager.stopKeepAlive()
     }
 }
 
-import AVFoundation
+extension Notification.Name {
+    static let watchRecordingComplete = Notification.Name("watchRecordingComplete")
+}

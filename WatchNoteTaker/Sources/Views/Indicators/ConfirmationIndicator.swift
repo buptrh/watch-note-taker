@@ -17,7 +17,7 @@ struct ConfirmationIndicator: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
-                        .lineLimit(4)
+                        .fixedSize(horizontal: false, vertical: true)
                         .padding(.horizontal, 8)
                         .padding(.top, 4)
                 }

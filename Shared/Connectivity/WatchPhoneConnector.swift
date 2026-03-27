@@ -144,6 +144,9 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
             let date = Date(timeIntervalSince1970: timestamp)
             onAudioChunkReceived?(audioData, date)
 
+        case "recordingComplete":
+            NotificationCenter.default.post(name: Notification.Name("watchRecordingComplete"), object: nil)
+
         case "transcription":
             guard let text = message["text"] as? String else { return }
             onTranscriptionReceived?(text)

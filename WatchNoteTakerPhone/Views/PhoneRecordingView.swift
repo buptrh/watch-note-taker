@@ -4,30 +4,45 @@ import UniformTypeIdentifiers
 struct PhoneRecordingView: View {
     @Bindable var viewModel: RecordingViewModel
     @ObservedObject var vaultWriter: VaultWriter
+    @ObservedObject var watchService: PhoneTranscriptionService
     @State private var showFolderPicker = false
+
+    /// True when watching a watch recording (not recording locally)
+    private var isWatchMode: Bool {
+        watchService.isWatchRecording && viewModel.state == .idle
+    }
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 32) {
                 Spacer()
 
-                statusIcon
-                statusText
+                if isWatchMode {
+                    watchRecordingView
+                } else {
+                    statusIcon
+                    statusText
 
-                if let text = viewModel.lastTranscribedText,
-                   viewModel.state == .idle,
-                   viewModel.errorMessage == nil {
-                    transcribedTextView(text)
-                }
+                    // Show transcript: live during recording, with spinner when processing, scrollable when done
+                    if !viewModel.liveTranscript.isEmpty || viewModel.state == .transcribing || viewModel.state == .saving {
+                        transcriptArea
+                    } else if viewModel.lastTranscribedText != nil,
+                              viewModel.state == .idle,
+                              viewModel.errorMessage == nil {
+                        transcriptArea
+                    }
 
-                if let error = viewModel.errorMessage {
-                    errorView(error)
+                    if let error = viewModel.errorMessage {
+                        errorView(error)
+                    }
                 }
 
                 Spacer()
 
-                recordButton
-                    .padding(.bottom, 40)
+                if !isWatchMode {
+                    recordButton
+                        .padding(.bottom, 40)
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(.systemBackground))
@@ -115,15 +130,75 @@ struct PhoneRecordingView: View {
         }
     }
 
-    private func transcribedTextView(_ text: String) -> some View {
-        Text(text)
-            .font(.body)
-            .foregroundStyle(.primary)
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, 32)
-            .padding(.vertical, 12)
+    private var watchRecordingView: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "applewatch.radiowaves.left.and.right")
+                .font(.system(size: 50))
+                .foregroundStyle(.orange)
+
+            Text("Recording on Watch")
+                .font(.title2)
+                .fontWeight(.medium)
+                .foregroundStyle(.orange)
+
+            if watchService.isTranscribing {
+                HStack(spacing: 6) {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                    Text("Transcribing...")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            if !watchService.liveTranscript.isEmpty {
+                ScrollView {
+                    Text(watchService.liveTranscript)
+                        .font(.body)
+                        .foregroundStyle(.primary)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(16)
+                }
+                .frame(maxHeight: 300)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                .padding(.horizontal, 24)
+            }
+        }
+    }
+
+    private var transcriptArea: some View {
+        VStack(spacing: 8) {
+            ScrollView {
+                Text(displayTranscript)
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(16)
+            }
+            .frame(maxHeight: 300)
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
-            .padding(.horizontal, 24)
+
+            // Show processing indicator when still transcribing
+            if viewModel.state == .transcribing || viewModel.state == .saving {
+                HStack(spacing: 6) {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                    Text("Finishing transcription...")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(.horizontal, 24)
+    }
+
+    private var displayTranscript: String {
+        if !viewModel.liveTranscript.isEmpty {
+            return viewModel.liveTranscript
+        }
+        return viewModel.lastTranscribedText ?? ""
     }
 
     private func errorView(_ message: String) -> some View {

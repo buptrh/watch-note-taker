@@ -846,11 +846,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 67ZYPV5TLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "WatchNoteTaker uses a workout session to keep recording active.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "WatchNoteTaker uses a workout session to keep recording active.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "WatchNoteTaker records voice notes for transcription.";
 				INFOPLIST_KEY_WKApplication_InterfaceOrientation = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_WKBackgroundModes = "workout-processing";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.watchnotetaker;
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.watchnotetaker.watchkitapp;
@@ -892,11 +889,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 67ZYPV5TLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "WatchNoteTaker uses a workout session to keep recording active.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "WatchNoteTaker uses a workout session to keep recording active.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "WatchNoteTaker records voice notes for transcription.";
 				INFOPLIST_KEY_WKApplication_InterfaceOrientation = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_WKBackgroundModes = "workout-processing";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.watchnotetaker;
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.watchnotetaker.watchkitapp;
