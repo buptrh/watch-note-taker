@@ -7,7 +7,13 @@ final class AudioRecorder: AudioRecording, @unchecked Sendable {
     private var accumulatedBuffers: [AVAudioPCMBuffer] = []
     private var isCurrentlyRecording = false
 
-    func start() async throws {
+    /// Called when VAD detects a chunk boundary during recording (for streaming mode)
+    var onChunkReady: (([AVAudioPCMBuffer]) -> Void)?
+
+    private var vadChunker: VADChunker?
+
+    /// Start recording. If streaming is true, uses VAD to emit chunks via onChunkReady.
+    func start(streaming: Bool = false) async throws {
         let session = AVAudioSession.sharedInstance()
 
         do {
@@ -15,6 +21,12 @@ final class AudioRecorder: AudioRecording, @unchecked Sendable {
             try session.setActive(true)
         } catch {
             throw AudioRecorderError.audioSessionActivationFailed(error.localizedDescription)
+        }
+
+        if streaming {
+            vadChunker = VADChunker()
+        } else {
+            vadChunker = nil
         }
 
         let inputNode = engine.inputNode
@@ -29,6 +41,14 @@ final class AudioRecorder: AudioRecording, @unchecked Sendable {
             self.bufferQueue.sync {
                 self.accumulatedBuffers.append(buffer)
             }
+
+            // VAD chunking for streaming mode
+            if let chunker = self.vadChunker {
+                let result = chunker.feed(buffer)
+                if case .chunkReady(let buffers) = result {
+                    self.onChunkReady?(buffers)
+                }
+            }
         }
 
         do {
@@ -41,6 +61,11 @@ final class AudioRecorder: AudioRecording, @unchecked Sendable {
         }
     }
 
+    // Protocol conformance — non-streaming start
+    func start() async throws {
+        try await start(streaming: false)
+    }
+
     func stop() async throws -> AVAudioPCMBuffer {
         guard isCurrentlyRecording else {
             throw AudioRecorderError.notRecording
@@ -49,6 +74,12 @@ final class AudioRecorder: AudioRecording, @unchecked Sendable {
         engine.inputNode.removeTap(onBus: 0)
         engine.stop()
         isCurrentlyRecording = false
+
+        // Flush remaining VAD buffer
+        if let remaining = vadChunker?.flush() {
+            onChunkReady?(remaining)
+        }
+        vadChunker = nil
 
         let buffers = bufferQueue.sync { accumulatedBuffers }
 
@@ -59,7 +90,7 @@ final class AudioRecorder: AudioRecording, @unchecked Sendable {
         return merged
     }
 
-    private func mergeBuffers(_ buffers: [AVAudioPCMBuffer]) -> AVAudioPCMBuffer? {
+    static func mergeBuffers(_ buffers: [AVAudioPCMBuffer]) -> AVAudioPCMBuffer? {
         guard let first = buffers.first else { return nil }
 
         let totalFrames = buffers.reduce(0) { $0 + $1.frameLength }
@@ -82,5 +113,9 @@ final class AudioRecorder: AudioRecording, @unchecked Sendable {
         merged.frameLength = totalFrames
 
         return merged
+    }
+
+    private func mergeBuffers(_ buffers: [AVAudioPCMBuffer]) -> AVAudioPCMBuffer? {
+        AudioRecorder.mergeBuffers(buffers)
     }
 }

@@ -1,32 +1,57 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct PhoneRecordingView: View {
     @Bindable var viewModel: RecordingViewModel
+    @ObservedObject var vaultWriter: VaultWriter
+    @State private var showFolderPicker = false
 
     var body: some View {
-        VStack(spacing: 32) {
-            Spacer()
+        NavigationStack {
+            VStack(spacing: 32) {
+                Spacer()
 
-            statusIcon
-            statusText
+                statusIcon
+                statusText
 
-            if let text = viewModel.lastTranscribedText,
-               viewModel.state == .idle,
-               viewModel.errorMessage == nil {
-                transcribedTextView(text)
+                if let text = viewModel.lastTranscribedText,
+                   viewModel.state == .idle,
+                   viewModel.errorMessage == nil {
+                    transcribedTextView(text)
+                }
+
+                if let error = viewModel.errorMessage {
+                    errorView(error)
+                }
+
+                Spacer()
+
+                recordButton
+                    .padding(.bottom, 40)
             }
-
-            if let error = viewModel.errorMessage {
-                errorView(error)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(.systemBackground))
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        if vaultWriter.hasVaultAccess {
+                            Label("Vault: \(vaultWriter.vaultPath)", systemImage: "checkmark.circle.fill")
+                            Button("Change Vault Folder") { showFolderPicker = true }
+                            Button("Remove Vault Access", role: .destructive) { vaultWriter.removeBookmark() }
+                        } else {
+                            Button("Set Obsidian Vault Folder") { showFolderPicker = true }
+                        }
+                    } label: {
+                        Image(systemName: vaultWriter.hasVaultAccess ? "folder.fill" : "folder.badge.questionmark")
+                    }
+                }
             }
-
-            Spacer()
-
-            recordButton
-                .padding(.bottom, 60)
+            .sheet(isPresented: $showFolderPicker) {
+                FolderPicker { url in
+                    vaultWriter.saveBookmark(for: url)
+                }
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemBackground))
     }
 
     @ViewBuilder
@@ -102,11 +127,14 @@ struct PhoneRecordingView: View {
     }
 
     private func errorView(_ message: String) -> some View {
-        Text(message)
-            .font(.caption)
-            .foregroundStyle(.red)
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, 24)
+        ScrollView {
+            Text(message)
+                .font(.caption)
+                .foregroundStyle(.red)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 24)
+        }
+        .frame(maxHeight: 100)
     }
 
     private var recordButton: some View {
@@ -123,5 +151,31 @@ struct PhoneRecordingView: View {
                 }
         }
         .disabled(viewModel.state == .transcribing || viewModel.state == .saving)
+    }
+}
+
+/// UIKit wrapper for folder picker
+struct FolderPicker: UIViewControllerRepresentable {
+    let onPick: (URL) -> Void
+
+    func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
+        let picker = UIDocumentPickerViewController(forOpeningContentTypes: [.folder])
+        picker.directoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator { Coordinator(onPick: onPick) }
+
+    class Coordinator: NSObject, UIDocumentPickerDelegate {
+        let onPick: (URL) -> Void
+        init(onPick: @escaping (URL) -> Void) { self.onPick = onPick }
+
+        func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+            guard let url = urls.first else { return }
+            onPick(url)
+        }
     }
 }

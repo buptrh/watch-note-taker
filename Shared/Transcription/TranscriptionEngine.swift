@@ -23,7 +23,7 @@ final class TranscriptionEngine: Transcribing, @unchecked Sendable {
             verbose: false,
             language: "zh",
             skipSpecialTokens: true,
-            withoutTimestamps: true
+            withoutTimestamps: false
         )
         let results = try await kit.transcribe(audioPath: tempURL.path, decodeOptions: options)
 

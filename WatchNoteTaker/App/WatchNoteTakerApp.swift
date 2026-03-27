@@ -3,40 +3,41 @@ import AppIntents
 
 @main
 struct WatchNoteTakerApp: App {
-    @State private var viewModel = RecordingViewModel(
-        audioRecorder: WatchNoteTakerApp.makeAudioRecorder(),
-        transcriptionEngine: WatchNoteTakerApp.makeTranscriptionEngine(),
-        noteStore: NoteStore()
-    )
+    @State private var viewModel: RecordingViewModel
+
+    init() {
+        let recorder = AudioRecorder()
+        let engine: any Transcribing
+        #if targetEnvironment(simulator)
+        engine = SimulatorTranscriptionEngine()
+        #else
+        engine = TranscriptionEngine()
+        #endif
+        let store = NoteStore()
+        let vm = RecordingViewModel(
+            audioRecorder: recorder,
+            transcriptionEngine: engine,
+            noteStore: store
+        )
+        // Default to phone relay if available
+        vm.usePhoneRelay = true
+        _viewModel = State(initialValue: vm)
+    }
 
     var body: some Scene {
         WindowGroup {
             RecordingView(viewModel: viewModel)
                 .onAppear {
                     ActionButtonIntent.viewModel = viewModel
+                    WatchPhoneConnector.shared.activate()
                 }
                 .task {
-                    // Register shortcuts with the system
                     ActionButtonShortcutsProvider.updateAppShortcutParameters()
-                    // Preload WhisperKit model on launch so first transcription is fast
-                    await viewModel.prewarmModel()
+                    // Only prewarm local model if phone isn't reachable
+                    if !WatchPhoneConnector.shared.isReachable {
+                        await viewModel.prewarmModel()
+                    }
                 }
         }
-    }
-
-    private static func makeAudioRecorder() -> any AudioRecording {
-        #if targetEnvironment(simulator)
-        SimulatorAudioRecorder()
-        #else
-        AudioRecorder()
-        #endif
-    }
-
-    private static func makeTranscriptionEngine() -> any Transcribing {
-        #if targetEnvironment(simulator)
-        SimulatorTranscriptionEngine()
-        #else
-        TranscriptionEngine()
-        #endif
     }
 }

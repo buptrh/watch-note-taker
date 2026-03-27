@@ -37,6 +37,9 @@ targets:
         SWIFT_VERSION: "6.0"
         GENERATE_INFOPLIST_FILE: true
         INFOPLIST_KEY_NSMicrophoneUsageDescription: "WatchNoteTaker records voice notes for transcription."
+        INFOPLIST_KEY_NSHealthShareUsageDescription: "WatchNoteTaker uses a workout session to keep recording active."
+        INFOPLIST_KEY_NSHealthUpdateUsageDescription: "WatchNoteTaker uses a workout session to keep recording active."
+        INFOPLIST_KEY_WKBackgroundModes: workout-processing
     entitlements:
       path: WatchNoteTaker/WatchNoteTaker.entitlements
 
@@ -58,6 +61,7 @@ targets:
         GENERATE_INFOPLIST_FILE: true
         INFOPLIST_KEY_NSMicrophoneUsageDescription: "WatchNoteTaker records voice notes for transcription."
         INFOPLIST_KEY_UILaunchScreen_Generation: true
+        INFOPLIST_KEY_UIBackgroundModes: audio
         TARGETED_DEVICE_FAMILY: 1
 
   WatchNoteTakerTests:
