@@ -16,12 +16,13 @@ struct RecordingIndicator: View {
                         .fill(DS.recording)
                         .frame(width: 8, height: 8)
                     Text("REC")
-                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .font(DS.Font.mono(size: 10))
+                        .fontWeight(.bold)
                         .foregroundStyle(DS.recording)
                 }
                 Spacer()
                 Text(formatDuration(duration))
-                    .font(.system(size: 10, weight: .medium, design: .monospaced))
+                    .font(DS.Font.mono(size: 10))
                     .foregroundStyle(.white)
             }
             .padding(.horizontal, DS.Space.sm)
@@ -50,7 +51,7 @@ struct RecordingIndicator: View {
             if !liveTranscript.isEmpty {
                 ScrollView {
                     Text(liveTranscript)
-                        .font(.system(size: 11))
+                        .font(DS.Font.body(size: 11))
                         .foregroundStyle(.white.opacity(0.85))
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -62,8 +63,8 @@ struct RecordingIndicator: View {
 
             Spacer()
 
-            Text("Press to stop")
-                .font(.system(size: 10))
+            Text("Tap to stop")
+                .font(DS.Font.body(size: 10))
                 .foregroundStyle(DS.slateLight)
                 .padding(.bottom, DS.Space.sm)
         }

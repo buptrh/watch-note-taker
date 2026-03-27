@@ -93,7 +93,8 @@ struct PhoneRecordingView: View {
                         .fill(DS.recording)
                         .frame(width: 10, height: 10)
                     Text("REC")
-                        .font(.system(size: 13, weight: .bold, design: .monospaced))
+                        .font(DS.Font.mono(size: 13))
+                        .fontWeight(.bold)
                         .foregroundStyle(DS.recording)
                 }
             }
@@ -102,7 +103,7 @@ struct PhoneRecordingView: View {
 
             if viewModel.state == .recording {
                 Text(formatDuration(viewModel.recordingDuration))
-                    .font(.system(size: 13, weight: .medium, design: .monospaced))
+                    .font(DS.Font.mono(size: 13))
                     .foregroundStyle(.white)
             } else {
                 Button {
@@ -150,10 +151,10 @@ struct PhoneRecordingView: View {
     private var readyContent: some View {
         VStack(spacing: DS.Space.sm) {
             Text("WatchNoteTaker")
-                .font(.system(size: 28, weight: .bold, design: .serif))
+                .font(DS.Font.display(size: 28))
                 .foregroundStyle(.white)
             Text("Speak it. It's saved.")
-                .font(.system(size: 15))
+                .font(DS.Font.body(size: 15))
                 .foregroundStyle(DS.slateLight)
         }
     }
@@ -170,12 +171,12 @@ struct PhoneRecordingView: View {
             }
 
             Text("Saved to vault")
-                .font(.system(size: 17, weight: .semibold))
+                .font(DS.Font.heading(size: 17))
                 .foregroundStyle(DS.success)
 
             ScrollView {
                 Text(text)
-                    .font(.system(size: 15))
+                    .font(DS.Font.body(size: 15))
                     .foregroundStyle(.white.opacity(0.7))
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -194,7 +195,7 @@ struct PhoneRecordingView: View {
                 .foregroundStyle(DS.amber)
 
             Text(message)
-                .font(.system(size: 14))
+                .font(DS.Font.body(size: 14))
                 .foregroundStyle(DS.slateLight)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, DS.Space.lg)
@@ -210,18 +211,40 @@ struct PhoneRecordingView: View {
                 .frame(height: 60)
                 .padding(.horizontal, DS.Space.lg)
 
-            // Live transcript
+            // Live transcript with two-tone effect
             if !viewModel.liveTranscript.isEmpty {
                 ScrollView {
-                    Text(viewModel.liveTranscript)
-                        .font(.system(size: 17))
-                        .foregroundStyle(.white)
-                        .multilineTextAlignment(.leading)
+                    twoToneTranscript(viewModel.liveTranscript)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(DS.Space.md)
                 }
                 .frame(maxHeight: 300)
                 .padding(.horizontal, DS.Space.lg)
+            }
+        }
+    }
+
+    /// Renders transcript with confirmed text in white and trailing words in faded amber
+    private func twoToneTranscript(_ text: String) -> some View {
+        let words = text.split(separator: " ", omittingEmptySubsequences: true)
+        let fadeCount = min(8, words.count)
+        let confirmedCount = words.count - fadeCount
+
+        return Group {
+            if words.isEmpty {
+                Text("")
+            } else {
+                let confirmed = words.prefix(confirmedCount).joined(separator: " ")
+                let streaming = words.suffix(fadeCount).joined(separator: " ")
+
+                (Text(confirmed.isEmpty ? "" : confirmed + " ")
+                    .font(DS.Font.body(size: 17))
+                    .foregroundColor(.white)
+                +
+                Text(streaming)
+                    .font(DS.Font.body(size: 17))
+                    .foregroundColor(DS.amberGlow.opacity(0.6)))
+                .multilineTextAlignment(.leading)
             }
         }
     }
@@ -235,13 +258,13 @@ struct PhoneRecordingView: View {
                 .tint(DS.amber)
 
             Text("Transcribing...")
-                .font(.system(size: 17, weight: .medium))
+                .font(DS.Font.heading(size: 17))
                 .foregroundStyle(DS.amber)
 
             if !viewModel.liveTranscript.isEmpty {
                 ScrollView {
                     Text(viewModel.liveTranscript)
-                        .font(.system(size: 15))
+                        .font(DS.Font.body(size: 15))
                         .foregroundStyle(.white.opacity(0.7))
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -272,17 +295,17 @@ struct PhoneRecordingView: View {
             // Label under button
             if viewModel.state == .recording {
                 Text("Tap to stop")
-                    .font(.system(size: 13))
+                    .font(DS.Font.body(size: 13))
                     .foregroundStyle(DS.slateLight)
             } else if viewModel.state == .idle && viewModel.lastTranscribedText == nil && viewModel.errorMessage == nil {
                 Text("Tap to record")
-                    .font(.system(size: 13))
+                    .font(DS.Font.body(size: 13))
                     .foregroundStyle(DS.slateLight)
 
                 // Note counter
                 if todayNoteCount > 0 {
                     Text("\(todayNoteCount) note\(todayNoteCount == 1 ? "" : "s") today")
-                        .font(.system(size: 12, design: .monospaced))
+                        .font(DS.Font.mono(size: 12))
                         .foregroundStyle(DS.slate)
                 }
             }
@@ -376,7 +399,7 @@ struct PhoneRecordingView: View {
                 .foregroundStyle(DS.amber)
 
             Text("Recording on Watch")
-                .font(.system(size: 20, weight: .semibold))
+                .font(DS.Font.heading(size: 20))
                 .foregroundStyle(DS.amber)
 
             if watchService.isTranscribing {

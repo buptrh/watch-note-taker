@@ -10,7 +10,7 @@ struct ErrorIndicator: View {
                     .font(.system(size: 28))
                     .foregroundStyle(DS.amber)
                 Text(message)
-                    .font(.system(size: 10))
+                    .font(DS.Font.body(size: 10))
                     .foregroundStyle(DS.slateLight)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)

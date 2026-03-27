@@ -90,7 +90,7 @@ struct OnboardingView: View {
             }
 
             Text("WatchNoteTaker")
-                .font(.system(size: 28, weight: .bold, design: .serif))
+                .font(DS.Font.display(size: 28))
                 .foregroundStyle(.white)
 
             Text("Record voice notes on your Apple Watch or iPhone. Transcribed instantly and saved to your Obsidian vault.")
@@ -113,7 +113,7 @@ struct OnboardingView: View {
             }
 
             Text("Microphone Access")
-                .font(.system(size: 24, weight: .semibold))
+                .font(DS.Font.heading(size: 24))
                 .foregroundStyle(.white)
 
             if micGranted {
@@ -122,7 +122,7 @@ struct OnboardingView: View {
                     .foregroundStyle(DS.success)
             } else {
                 Text("We need microphone access to record your voice notes. Audio is processed on-device — nothing is sent to a server.")
-                    .font(.system(size: 15))
+                    .font(DS.Font.body(size: 15))
                     .foregroundStyle(DS.slateLight)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
@@ -145,7 +145,7 @@ struct OnboardingView: View {
             }
 
             Text("Obsidian Vault")
-                .font(.system(size: 24, weight: .semibold))
+                .font(DS.Font.heading(size: 24))
                 .foregroundStyle(.white)
 
             if vaultWriter.hasVaultAccess {
@@ -154,7 +154,7 @@ struct OnboardingView: View {
                     .foregroundStyle(DS.success)
             } else {
                 Text("Select your Obsidian vault's 00_inbox folder to save voice notes directly into your vault.")
-                    .font(.system(size: 15))
+                    .font(DS.Font.body(size: 15))
                     .foregroundStyle(DS.slateLight)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)

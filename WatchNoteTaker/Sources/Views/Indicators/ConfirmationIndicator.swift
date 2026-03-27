@@ -19,19 +19,19 @@ struct ConfirmationIndicator: View {
             }
 
             Text("Saved to vault")
-                .font(.system(size: 13, weight: .medium))
+                .font(DS.Font.heading(size: 13))
                 .foregroundStyle(DS.success)
 
             if let filename {
                 Text(filename)
-                    .font(.system(size: 10, design: .monospaced))
+                    .font(DS.Font.mono(size: 10))
                     .foregroundStyle(DS.slateLight)
             }
 
             if let text, !text.isEmpty {
                 ScrollView {
                     Text("\"\(text.prefix(100))...\"")
-                        .font(.system(size: 10))
+                        .font(DS.Font.body(size: 10))
                         .foregroundStyle(DS.slateLight)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, DS.Space.sm)

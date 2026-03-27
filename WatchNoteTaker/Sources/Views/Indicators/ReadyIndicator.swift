@@ -4,7 +4,7 @@ struct ReadyIndicator: View {
     var body: some View {
         VStack(spacing: DS.Space.sm) {
             Text("WatchNote")
-                .font(.system(size: 20, weight: .bold, design: .serif))
+                .font(DS.Font.display(size: 20))
                 .foregroundStyle(.white)
 
             // Waveform icon
@@ -12,15 +12,16 @@ struct ReadyIndicator: View {
                 .font(.system(size: 28, weight: .light))
                 .foregroundStyle(DS.slateLight)
 
-            VStack(spacing: DS.Space.xs) {
-                Text("Press Action Button")
-                    .font(.system(size: 12))
-                    .foregroundStyle(DS.slateLight)
-                Text("to record")
-                    .font(.system(size: 12))
-                    .foregroundStyle(DS.slateLight)
-            }
-            .padding(.top, DS.Space.xs)
+            Text("Tap to record")
+                .font(DS.Font.body(size: 12))
+                .foregroundStyle(DS.slateLight)
+                .padding(.top, DS.Space.xs)
+
+            // Small amber dot — ready indicator
+            Circle()
+                .fill(DS.amber)
+                .frame(width: 6, height: 6)
+                .padding(.top, DS.Space.sm)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(DS.ink)

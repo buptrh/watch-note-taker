@@ -26,4 +26,10 @@ enum L10n {
     static var skipSetupLater: String { NSLocalizedString("Skip — I'll set up later", comment: "Onboarding") }
     static var continueButton: String { NSLocalizedString("Continue", comment: "Onboarding") }
     static var done: String { NSLocalizedString("Done", comment: "Onboarding") }
+
+    // New strings for design system v1
+    static var tapToRecord: String { NSLocalizedString("Tap to record", comment: "Idle prompt") }
+    static var tapToStop: String { NSLocalizedString("Tap to stop", comment: "Recording prompt") }
+    static var savedToVault: String { NSLocalizedString("Saved to vault", comment: "Confirmation") }
+    static var speakItSaved: String { NSLocalizedString("Speak it. It's saved.", comment: "Tagline") }
 }

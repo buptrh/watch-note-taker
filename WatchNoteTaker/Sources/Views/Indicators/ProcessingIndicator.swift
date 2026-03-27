@@ -22,13 +22,13 @@ struct ProcessingIndicator: View {
                 }
 
             Text("Transcribing...")
-                .font(.system(size: 13, weight: .medium))
+                .font(DS.Font.heading(size: 13))
                 .foregroundStyle(DS.amber)
 
             if let existingText, !existingText.isEmpty {
                 ScrollView {
                     Text(existingText)
-                        .font(.system(size: 11))
+                        .font(DS.Font.body(size: 11))
                         .foregroundStyle(.white.opacity(0.7))
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)

@@ -52,8 +52,18 @@ struct WatchNoteTakerPhoneApp: App {
                     }
                 }
             } else {
-                ProgressView("Loading...")
-                    .onAppear { setupViewModel() }
+                ZStack {
+                    DS.ink.ignoresSafeArea()
+                    VStack(spacing: DS.Space.md) {
+                        ProgressView()
+                            .tint(DS.amber)
+                            .scaleEffect(1.2)
+                        Text("Loading...")
+                            .font(DS.Font.body(size: 15))
+                            .foregroundStyle(DS.slateLight)
+                    }
+                }
+                .onAppear { setupViewModel() }
             }
         }
     }

@@ -48,21 +48,24 @@ struct VoiceNoteComplicationView: View {
         case .accessoryCircular:
             ZStack {
                 AccessoryWidgetBackground()
-                Image(systemName: "mic.fill")
+                Image(systemName: "waveform")
                     .font(.title3)
+                    .foregroundStyle(DS.amber)
             }
         case .accessoryCorner:
-            Image(systemName: "mic.fill")
+            Image(systemName: "waveform")
                 .font(.title3)
+                .foregroundStyle(DS.amber)
                 .widgetLabel("Note")
         case .accessoryInline:
-            Label("Voice Note", systemImage: "mic.fill")
+            Label("WatchNote", systemImage: "waveform")
         case .accessoryRectangular:
             HStack {
-                Image(systemName: "mic.fill")
+                Image(systemName: "waveform")
                     .font(.title3)
+                    .foregroundStyle(DS.amber)
                 VStack(alignment: .leading) {
-                    Text("Voice Note")
+                    Text("WatchNote")
                         .font(.headline)
                     Text("Tap to record")
                         .font(.caption2)

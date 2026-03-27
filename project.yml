@@ -23,6 +23,8 @@ targets:
     resources:
       - path: WatchNoteTaker/Resources/whisper-model.bundle
         buildPhase: resources
+      - path: Shared/Theme/Fonts
+        buildPhase: resources
     dependencies:
       - package: WhisperKit
     settings:
@@ -39,6 +41,14 @@ targets:
         INFOPLIST_KEY_NSMicrophoneUsageDescription: "WatchNoteTaker records voice notes for transcription."
     entitlements:
       path: WatchNoteTaker/WatchNoteTaker.entitlements
+    info:
+      path: WatchNoteTaker/Info.plist
+      properties:
+        UIAppFonts:
+          - DMSerifDisplay-Regular.ttf
+          - DMSans-Light.ttf
+          - DMSans-SemiBold.ttf
+          - JetBrainsMono-Regular.ttf
 
   WatchNoteTakerPhone:
     type: application
@@ -46,6 +56,9 @@ targets:
     sources:
       - path: Shared
       - path: WatchNoteTakerPhone
+    resources:
+      - path: Shared/Theme/Fonts
+        buildPhase: resources
     dependencies:
       - package: WhisperKit
     settings:
@@ -60,6 +73,14 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: true
         INFOPLIST_KEY_UIBackgroundModes: audio
         TARGETED_DEVICE_FAMILY: 1
+    info:
+      path: WatchNoteTakerPhone/Info.plist
+      properties:
+        UIAppFonts:
+          - DMSerifDisplay-Regular.ttf
+          - DMSans-Light.ttf
+          - DMSans-SemiBold.ttf
+          - JetBrainsMono-Regular.ttf
 
   WatchNoteTakerTests:
     type: bundle.unit-test

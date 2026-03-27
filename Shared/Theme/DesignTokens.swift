@@ -38,6 +38,30 @@ enum DS {
         static let lg: CGFloat = 20
         static let xl: CGFloat = 28
     }
+
+    // MARK: - Typography
+
+    enum Font {
+        /// DM Serif Display — hero/display text
+        static func display(size: CGFloat) -> SwiftUI.Font {
+            .custom("DMSerifDisplay-Regular", size: size)
+        }
+
+        /// DM Sans SemiBold (600) — headings
+        static func heading(size: CGFloat) -> SwiftUI.Font {
+            .custom("DMSans-SemiBold", size: size)
+        }
+
+        /// DM Sans Light (300) — body text
+        static func body(size: CGFloat) -> SwiftUI.Font {
+            .custom("DMSans-Light", size: size)
+        }
+
+        /// JetBrains Mono — timestamps, filenames, code
+        static func mono(size: CGFloat) -> SwiftUI.Font {
+            .custom("JetBrainsMono-Regular", size: size)
+        }
+    }
 }
 
 // MARK: - Hex color initializer
