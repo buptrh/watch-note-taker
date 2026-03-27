@@ -73,12 +73,9 @@ struct SettingsView: View {
                         Text("AI Model")
                             .foregroundStyle(.white)
                         Spacer()
-                        Text("large-v3")
-                            .font(.system(size: 14, design: .monospaced))
+                        Text("large-v3-turbo")
+                            .font(DS.Font.mono(size: 13))
                             .foregroundStyle(DS.slateLight)
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 12))
-                            .foregroundStyle(DS.slate)
                     }
                 }
 
