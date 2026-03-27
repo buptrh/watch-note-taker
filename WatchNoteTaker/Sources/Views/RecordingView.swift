@@ -3,6 +3,7 @@ import WatchKit
 
 struct RecordingView: View {
     @Bindable var viewModel: RecordingViewModel
+    @Environment(\.isLuminanceReduced) var isLuminanceReduced
 
     private static let confirmationThreshold: TimeInterval = 5.0
 
@@ -40,26 +41,29 @@ struct RecordingView: View {
     }
 
     var body: some View {
-        contentView
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(DS.ink)
-            .onTapGesture {
-                let wasRecording = viewModel.state == .recording
-                viewModel.toggleRecording()
+        TimelineView(.periodic(from: .now, by: viewModel.state == .recording ? 1 : 60)) { _ in
+            contentView
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(DS.ink)
+                .opacity(isLuminanceReduced && viewModel.state == .idle ? 0.6 : 1.0)
+        }
+        .onTapGesture {
+            let wasRecording = viewModel.state == .recording
+            viewModel.toggleRecording()
 
-                if wasRecording {
-                    WKInterfaceDevice.current().play(.stop)
-                } else if viewModel.state == .recording {
-                    WKInterfaceDevice.current().play(.start)
-                }
+            if wasRecording {
+                WKInterfaceDevice.current().play(.stop)
+            } else if viewModel.state == .recording {
+                WKInterfaceDevice.current().play(.start)
             }
-            .onChange(of: viewModel.state) { oldState, newState in
-                if newState == .idle && viewModel.lastCaptureTimestamp != nil && viewModel.errorMessage == nil {
-                    WKInterfaceDevice.current().play(.success)
-                } else if newState == .idle && viewModel.errorMessage != nil {
-                    WKInterfaceDevice.current().play(.failure)
-                }
+        }
+        .onChange(of: viewModel.state) { oldState, newState in
+            if newState == .idle && viewModel.lastCaptureTimestamp != nil && viewModel.errorMessage == nil {
+                WKInterfaceDevice.current().play(.success)
+            } else if newState == .idle && viewModel.errorMessage != nil {
+                WKInterfaceDevice.current().play(.failure)
             }
+        }
     }
 
     @ViewBuilder
