@@ -1,12 +1,16 @@
 import SwiftUI
 import AppIntents
+import Combine
 
 @main
 struct WatchNoteTakerPhoneApp: App {
     @StateObject private var vaultWriter = VaultWriter()
     @StateObject private var watchService: PhoneTranscriptionService
     @StateObject private var history = RecordingHistory()
+    @StateObject private var settings = AppSettings()
     @State private var viewModel: RecordingViewModel?
+    @State private var transcriptionEngine: TranscriptionEngine?
+    @State private var showOnboarding = false
 
     init() {
         let vw = VaultWriter()
@@ -21,20 +25,31 @@ struct WatchNoteTakerPhoneApp: App {
     var body: some Scene {
         WindowGroup {
             if let viewModel {
-                PhoneMainView(
-                    viewModel: viewModel,
-                    vaultWriter: vaultWriter,
-                    watchService: watchService,
-                    history: history
-                )
-                .onAppear {
-                    ActionButtonIntent.viewModel = viewModel
-                    WatchPhoneConnector.shared.activate()
-                }
-                .task {
-                    ActionButtonShortcutsProvider.updateAppShortcutParameters()
-                    await viewModel.prewarmModel()
-                    await watchService.prewarm()
+                if showOnboarding {
+                    OnboardingView(vaultWriter: vaultWriter) {
+                        settings.onboardingComplete = true
+                        showOnboarding = false
+                    }
+                } else {
+                    PhoneMainView(
+                        viewModel: viewModel,
+                        vaultWriter: vaultWriter,
+                        watchService: watchService,
+                        history: history,
+                        settings: settings
+                    )
+                    .onAppear {
+                        ActionButtonIntent.viewModel = viewModel
+                        WatchPhoneConnector.shared.activate()
+                    }
+                    .task {
+                        ActionButtonShortcutsProvider.updateAppShortcutParameters()
+                        await viewModel.prewarmModel()
+                        await watchService.prewarm()
+                    }
+                    .onChange(of: settings.language) { _, newLang in
+                        transcriptionEngine?.language = newLang
+                    }
                 }
             } else {
                 ProgressView("Loading...")
@@ -45,12 +60,18 @@ struct WatchNoteTakerPhoneApp: App {
 
     private func setupViewModel() {
         let store = VaultNoteStore(vaultWriter: vaultWriter)
+        let engine = TranscriptionEngine()
+        engine.language = settings.language
+        transcriptionEngine = engine
+
         let vm = RecordingViewModel(
             audioRecorder: AudioRecorder(),
-            transcriptionEngine: TranscriptionEngine(),
+            transcriptionEngine: engine,
             noteStore: store
         )
         vm.useLocalChunking = true
         viewModel = vm
+
+        showOnboarding = !settings.onboardingComplete
     }
 }

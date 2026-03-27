@@ -6,6 +6,7 @@ struct PhoneMainView: View {
     @ObservedObject var vaultWriter: VaultWriter
     @ObservedObject var watchService: PhoneTranscriptionService
     @ObservedObject var history: RecordingHistory
+    @ObservedObject var settings: AppSettings
 
     var body: some View {
         TabView {
@@ -25,6 +26,13 @@ struct PhoneMainView: View {
             .tabItem {
                 Label("History", systemImage: "clock.arrow.circlepath")
             }
+
+            NavigationStack {
+                SettingsView(settings: settings, vaultWriter: vaultWriter)
+            }
+            .tabItem {
+                Label("Settings", systemImage: "gear")
+            }
         }
     }
 }
@@ -34,7 +42,6 @@ struct PhoneRecordingView: View {
     @ObservedObject var vaultWriter: VaultWriter
     @ObservedObject var watchService: PhoneTranscriptionService
     @ObservedObject var history: RecordingHistory
-    @State private var showFolderPicker = false
 
     private var isWatchMode: Bool {
         watchService.isWatchRecording && viewModel.state == .idle
@@ -81,26 +88,6 @@ struct PhoneRecordingView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(.systemBackground))
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu {
-                        if vaultWriter.hasVaultAccess {
-                            Label("Vault: \(vaultWriter.vaultPath)", systemImage: "checkmark.circle.fill")
-                            Button("Change Vault Folder") { showFolderPicker = true }
-                            Button("Remove Vault Access", role: .destructive) { vaultWriter.removeBookmark() }
-                        } else {
-                            Button("Set Obsidian Vault Folder") { showFolderPicker = true }
-                        }
-                    } label: {
-                        Image(systemName: vaultWriter.hasVaultAccess ? "folder.fill" : "folder.badge.questionmark")
-                    }
-                }
-            }
-            .sheet(isPresented: $showFolderPicker) {
-                FolderPicker { url in
-                    vaultWriter.saveBookmark(for: url)
-                }
-            }
             .onChange(of: viewModel.state) { oldState, newState in
                 // Save to history when recording completes
                 if oldState == .saving && newState == .idle,
@@ -278,7 +265,14 @@ struct PhoneRecordingView: View {
 
     private var recordButton: some View {
         Button {
+            let wasRecording = viewModel.state == .recording
             viewModel.toggleRecording()
+            // Haptic feedback
+            if wasRecording {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            } else {
+                UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+            }
         } label: {
             Circle()
                 .fill(viewModel.state == .recording ? .red : .blue)

@@ -1,4 +1,5 @@
 import SwiftUI
+import WatchKit
 
 struct RecordingView: View {
     @Bindable var viewModel: RecordingViewModel
@@ -36,7 +37,22 @@ struct RecordingView: View {
         contentView
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onTapGesture {
+                let wasRecording = viewModel.state == .recording
                 viewModel.toggleRecording()
+
+                // Haptic feedback
+                if wasRecording {
+                    WKInterfaceDevice.current().play(.stop)
+                } else if viewModel.state == .recording {
+                    WKInterfaceDevice.current().play(.start)
+                }
+            }
+            .onChange(of: viewModel.state) { oldState, newState in
+                if newState == .idle && viewModel.lastCaptureTimestamp != nil && viewModel.errorMessage == nil {
+                    WKInterfaceDevice.current().play(.success)
+                } else if newState == .idle && viewModel.errorMessage != nil {
+                    WKInterfaceDevice.current().play(.failure)
+                }
             }
     }
 
@@ -61,7 +77,6 @@ struct RecordingView: View {
             VStack(spacing: 6) {
                 RecordingIndicator()
 
-                // Show live transcript
                 if !viewModel.liveTranscript.isEmpty {
                     Text(viewModel.liveTranscript)
                         .font(.system(size: 11))

@@ -5,6 +5,9 @@ final class TranscriptionEngine: Transcribing, @unchecked Sendable {
 
     private var whisperKit: WhisperKit?
 
+    /// Language code for transcription. "auto" = auto-detect, "zh" = Chinese, "en" = English, etc.
+    var language: String = "auto"
+
     func prewarm() async {
         _ = try? await getOrCreateWhisperKit()
     }
@@ -18,10 +21,11 @@ final class TranscriptionEngine: Transcribing, @unchecked Sendable {
         try writeBuffer(normalized, to: tempURL)
         defer { try? FileManager.default.removeItem(at: tempURL) }
 
-        // Chinese mode handles English code-switching well; English mode does not handle Chinese
+        let langValue: String? = language == "auto" ? nil : language
         let options = DecodingOptions(
             verbose: false,
-            language: "zh",
+            language: langValue,
+            detectLanguage: language == "auto",
             skipSpecialTokens: true,
             withoutTimestamps: false
         )
@@ -66,27 +70,23 @@ final class TranscriptionEngine: Transcribing, @unchecked Sendable {
     }
 
     /// Normalize audio so the loudest sample reaches ~90% of full volume.
-    /// This helps Whisper handle quiet recordings from the watch mic.
     private func normalizeAudio(_ buffer: AVAudioPCMBuffer) -> AVAudioPCMBuffer {
         guard let channelData = buffer.floatChannelData else { return buffer }
         let frameLength = Int(buffer.frameLength)
         guard frameLength > 0 else { return buffer }
 
-        // Find peak amplitude
         var peak: Float = 0
         for i in 0..<frameLength {
             let sample = abs(channelData[0][i])
             if sample > peak { peak = sample }
         }
 
-        // Skip if already loud enough or silent
         guard peak > 0.001 else { return buffer }
         let targetPeak: Float = 0.9
         if peak >= targetPeak { return buffer }
 
         let gain = targetPeak / peak
 
-        // Create a new buffer with amplified audio
         guard let normalized = AVAudioPCMBuffer(
             pcmFormat: buffer.format,
             frameCapacity: buffer.frameCapacity
