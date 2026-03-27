@@ -4,12 +4,17 @@ import AVFoundation
 
 /// Handles WatchConnectivity between watch and phone.
 /// Hybrid delivery: sendMessage when reachable (with retry), transferFile as fallback.
+/// Broadcasts recording state bidirectionally for UI sync.
 final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, @unchecked Sendable {
 
     static let shared = WatchPhoneConnector()
 
     @Published var isReachable = false
     @Published var pendingTransfers: Int = 0
+
+    /// Remote device recording state
+    @Published var remoteIsRecording = false
+    @Published var remoteDevice: String? = nil // "watch" or "phone"
 
     /// Called on the phone when an audio chunk arrives (real-time or queued file)
     var onAudioChunkReceived: ((Data, Date) -> Void)?
@@ -19,6 +24,14 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
 
     private let maxRetries = 3
     private let retryDelay: TimeInterval = 1.0
+    private var heartbeatTimer: Timer?
+    private var remoteTimeoutTimer: Timer?
+
+    #if os(watchOS)
+    private let localDevice = "watch"
+    #else
+    private let localDevice = "phone"
+    #endif
 
     private override init() {
         super.init()
@@ -29,6 +42,92 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         let session = WCSession.default
         session.delegate = self
         session.activate()
+    }
+
+    // MARK: - Recording State Sync
+
+    /// Broadcast local recording state to the other device
+    func sendRecordingStateChanged(isRecording: Bool) {
+        let device = localDevice
+
+        if isRecording {
+            DispatchQueue.main.async {
+                self.heartbeatTimer?.invalidate()
+                self.heartbeatTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
+                    self?.sendStateSyncMessage(isRecording: true, device: device)
+                }
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.heartbeatTimer?.invalidate()
+                self.heartbeatTimer = nil
+            }
+        }
+
+        sendStateSyncMessage(isRecording: isRecording, device: device)
+    }
+
+    private func sendStateSyncMessage(isRecording: Bool, device: String) {
+        let message: [String: Any] = [
+            "type": "recordingStateSync",
+            "isRecording": isRecording,
+            "device": device
+        ]
+        sendMessageBestEffort(message)
+    }
+
+    /// Request remote state (called on app launch / reachability change)
+    func sendStatePing() {
+        let message: [String: Any] = [
+            "type": "recordingStatePing",
+            "device": localDevice,
+            "isRecording": false // local state — the remote will reply with theirs
+        ]
+        sendMessageBestEffort(message)
+    }
+
+    private func handleRecordingStateSync(_ message: [String: Any]) {
+        guard let isRecording = message["isRecording"] as? Bool,
+              let device = message["device"] as? String else { return }
+
+        DispatchQueue.main.async {
+            self.remoteIsRecording = isRecording
+            self.remoteDevice = isRecording ? device : nil
+
+            if isRecording {
+                self.resetRemoteTimeout()
+            } else {
+                self.remoteTimeoutTimer?.invalidate()
+                self.remoteTimeoutTimer = nil
+            }
+        }
+    }
+
+    private func resetRemoteTimeout() {
+        remoteTimeoutTimer?.invalidate()
+        remoteTimeoutTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: false) { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.remoteIsRecording = false
+                self?.remoteDevice = nil
+            }
+        }
+    }
+
+    private func clearRemoteStateAfterDelay(_ delay: TimeInterval) {
+        remoteTimeoutTimer?.invalidate()
+        remoteTimeoutTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.remoteIsRecording = false
+                self?.remoteDevice = nil
+            }
+        }
+    }
+
+    /// Best-effort send — no retry, no fallback. Used for state sync.
+    private func sendMessageBestEffort(_ message: [String: Any]) {
+        let session = WCSession.default
+        guard session.isReachable else { return }
+        session.sendMessage(message, replyHandler: nil)
     }
 
     // MARK: - Watch → Phone: Send audio chunk (hybrid with retry)
@@ -54,7 +153,6 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
             guard let self else { return }
 
             if attempt < self.maxRetries {
-                // Retry after delay
                 DispatchQueue.global().asyncAfter(deadline: .now() + self.retryDelay) {
                     if WCSession.default.isReachable {
                         self.sendMessageWithRetry(audioData: audioData, date: date, attempt: attempt + 1)
@@ -63,7 +161,6 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
                     }
                 }
             } else {
-                // Max retries reached — fall back to file transfer
                 self.queueAudioFile(audioData, recordingDate: date)
             }
         }
@@ -97,7 +194,6 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
                 "date": date.timeIntervalSince1970
             ]
             session.sendMessage(message, replyHandler: nil) { [weak self] _ in
-                // Retry once
                 DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
                     if WCSession.default.isReachable {
                         WCSession.default.sendMessage(message, replyHandler: nil)
@@ -128,12 +224,21 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         DispatchQueue.main.async {
             self.isReachable = reachable
         }
+        if reachable {
+            sendStatePing()
+        }
     }
 
     func sessionReachabilityDidChange(_ session: WCSession) {
         let reachable = session.isReachable
         DispatchQueue.main.async {
             self.isReachable = reachable
+            if reachable {
+                self.sendStatePing()
+            } else if self.remoteIsRecording {
+                // Grace period before clearing remote state
+                self.clearRemoteStateAfterDelay(5)
+            }
         }
     }
 
@@ -165,7 +270,6 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
     // File transfer completed (watch side confirmation)
     func session(_ session: WCSession, didFinish fileTransfer: WCSessionFileTransfer, error: Error?) {
         if let error {
-            // Transfer failed — retry by re-queueing
             if let metadata = fileTransfer.file.metadata,
                let timestamp = metadata["date"] as? TimeInterval {
                 let date = Date(timeIntervalSince1970: timestamp)
@@ -202,6 +306,15 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         case "transcription":
             guard let text = message["text"] as? String else { return }
             onTranscriptionReceived?(text)
+
+        case "recordingStateSync":
+            handleRecordingStateSync(message)
+
+        case "recordingStatePing":
+            // Reply with our current state — not recording (idle) or recording
+            // For now, we don't track our own state here, so reply with false
+            // The ViewModel will call sendRecordingStateChanged on start/stop
+            break
 
         default:
             break

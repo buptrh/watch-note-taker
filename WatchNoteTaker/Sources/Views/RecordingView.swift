@@ -3,6 +3,7 @@ import WatchKit
 
 struct RecordingView: View {
     @Bindable var viewModel: RecordingViewModel
+    @ObservedObject var connector = WatchPhoneConnector.shared
     @Environment(\.isLuminanceReduced) var isLuminanceReduced
 
     private static let confirmationThreshold: TimeInterval = 5.0
@@ -12,6 +13,7 @@ struct RecordingView: View {
         case recording
         case processing
         case confirmation
+        case remoteRecording
         case error(String)
     }
 
@@ -22,6 +24,10 @@ struct RecordingView: View {
 
         switch viewModel.state {
         case .idle:
+            // Check if the other device is recording
+            if viewModel.isRemoteRecording {
+                return .remoteRecording
+            }
             if let lastCapture = viewModel.lastCaptureTimestamp,
                Date().timeIntervalSince(lastCapture) < Self.confirmationThreshold {
                 return .confirmation
@@ -48,6 +54,8 @@ struct RecordingView: View {
                 .opacity(isLuminanceReduced && viewModel.state == .idle ? 0.6 : 1.0)
         }
         .onTapGesture {
+            guard !viewModel.isRemoteRecording else { return }
+
             let wasRecording = viewModel.state == .recording
             viewModel.toggleRecording()
 
@@ -70,7 +78,7 @@ struct RecordingView: View {
     private var contentView: some View {
         switch displayState {
         case .ready:
-            ReadyIndicator()
+            ReadyIndicator(isConnected: connector.isReachable)
         case .recording:
             RecordingIndicator(
                 duration: viewModel.recordingDuration,
@@ -86,6 +94,8 @@ struct RecordingView: View {
                 text: viewModel.lastTranscribedText,
                 filename: currentFilename
             )
+        case .remoteRecording:
+            PhoneRecordingIndicator()
         case .error(let message):
             ErrorIndicator(message: message)
         }

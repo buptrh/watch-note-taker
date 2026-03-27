@@ -22,6 +22,7 @@
 		1C3B6D7104A7089218CA406A /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00214B39DE6C71B6F3B39819 /* SessionManager.swift */; };
 		1DB73635FD7A5ED5099A10E5 /* NoteStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BE5126FBCCB4248E56A6F1 /* NoteStoreError.swift */; };
 		1E8C1D4FBA6DC5446D4CBA57 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E48C9923D3BE7C9D45FAA52 /* Localizable.strings */; };
+		217DB6949DF8714E7DA4354E /* PhoneRecordingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1706A16E6E5EB2944F749CB /* PhoneRecordingIndicator.swift */; };
 		2B7D74B54283BAC3F85BB8A7 /* PhoneMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE36C61F49DAA6ECC65DCA10 /* PhoneMainView.swift */; };
 		2B800944461E463A9BA2E01B /* RecordingToggleable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D545B4DC030D2EB9957215B /* RecordingToggleable.swift */; };
 		2D9513135226BBBBD3C417C6 /* MockRecordingToggleable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BCF5DA2792750C90C7BE22F /* MockRecordingToggleable.swift */; };
@@ -183,6 +184,7 @@
 		E0D7606132771C317CB88059 /* VaultWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaultWriter.swift; sourceTree = "<group>"; };
 		E10067350EA9C65E4BFA946E /* WatchNoteTakerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WatchNoteTakerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E342EEB9291E0FFDA6268A19 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		F1706A16E6E5EB2944F749CB /* PhoneRecordingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneRecordingIndicator.swift; sourceTree = "<group>"; };
 		F39DA965D02EFC7308722A29 /* RecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingView.swift; sourceTree = "<group>"; };
 		F42B7B9DE04860FF691A6854 /* DMSerifDisplay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DMSerifDisplay-Regular.ttf"; sourceTree = "<group>"; };
 		F94C5254F3C40D0B6E44BBBD /* WatchNoteTakerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WatchNoteTakerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -270,6 +272,7 @@
 			children = (
 				6851620EF580AA8DC0690882 /* ConfirmationIndicator.swift */,
 				A416D13562C09D975C886A65 /* ErrorIndicator.swift */,
+				F1706A16E6E5EB2944F749CB /* PhoneRecordingIndicator.swift */,
 				D10D2A5C384D2301033BC60E /* ProcessingIndicator.swift */,
 				36C84FC692AC67C00DC3CFC7 /* ReadyIndicator.swift */,
 				43D0439F90FCBEAAFD4927F5 /* RecordingIndicator.swift */,
@@ -765,6 +768,7 @@
 				D2D3F45F893EAE016EC49DAE /* NoteStore.swift in Sources */,
 				1DB73635FD7A5ED5099A10E5 /* NoteStoreError.swift in Sources */,
 				7620B3534576B4DDE30BE552 /* NoteStoring.swift in Sources */,
+				217DB6949DF8714E7DA4354E /* PhoneRecordingIndicator.swift in Sources */,
 				A9CD8E2A76F511E9B03F5FF8 /* ProcessingIndicator.swift in Sources */,
 				D03A1968D5CCA8EF0238A4C3 /* ReadyIndicator.swift in Sources */,
 				A8FC5E8D433CE1C5B85B2344 /* RecordingIndicator.swift in Sources */,

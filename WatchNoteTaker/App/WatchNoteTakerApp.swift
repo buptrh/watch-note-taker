@@ -30,6 +30,7 @@ struct WatchNoteTakerApp: App {
                 .onAppear {
                     ActionButtonIntent.viewModel = viewModel
                     WatchPhoneConnector.shared.activate()
+                    WatchPhoneConnector.shared.sendStatePing()
                 }
                 .task {
                     ActionButtonShortcutsProvider.updateAppShortcutParameters()

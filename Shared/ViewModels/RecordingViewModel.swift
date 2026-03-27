@@ -44,6 +44,12 @@ final class RecordingViewModel: RecordingToggleable {
     /// Called when a recording is saved successfully (text, date, duration)
     var onRecordingSaved: ((String, Date, TimeInterval) -> Void)?
 
+    /// Whether the other device is currently recording
+    var isRemoteRecording: Bool { connector.remoteIsRecording }
+
+    /// Which device is recording remotely ("watch" or "phone")
+    var remoteDeviceName: String? { connector.remoteDevice }
+
     init(
         audioRecorder: AudioRecorder,
         transcriptionEngine: any Transcribing,
@@ -65,6 +71,9 @@ final class RecordingViewModel: RecordingToggleable {
     }
 
     func toggleRecording() {
+        // Block if the other device is recording
+        guard !isRemoteRecording else { return }
+
         switch state {
         case .idle:
             startRecording()
@@ -83,6 +92,7 @@ final class RecordingViewModel: RecordingToggleable {
         recordingStartTime = Date()
         recordingDuration = 0
         state = .recording
+        connector.sendRecordingStateChanged(isRecording: true)
 
         // Start duration timer
         durationTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
@@ -171,7 +181,7 @@ final class RecordingViewModel: RecordingToggleable {
                 let fullText = liveTranscript
 
                 if fullText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    // Nothing transcribed — not an error, just nothing to save
+                    connector.sendRecordingStateChanged(isRecording: false)
                     sessionManager.stopKeepAlive()
                     activeMode = nil
                     errorMessage = "No speech detected"
@@ -190,10 +200,12 @@ final class RecordingViewModel: RecordingToggleable {
                 lastTranscribedText = fullText
                 let duration = recordingDuration
                 onRecordingSaved?(fullText, now, duration)
+                connector.sendRecordingStateChanged(isRecording: false)
                 sessionManager.stopKeepAlive()
                 activeMode = nil
                 state = .idle
             } catch {
+                connector.sendRecordingStateChanged(isRecording: false)
                 sessionManager.stopKeepAlive()
                 activeMode = nil
                 state = .idle

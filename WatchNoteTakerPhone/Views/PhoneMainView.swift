@@ -33,12 +33,13 @@ struct PhoneRecordingView: View {
     @ObservedObject var vaultWriter: VaultWriter
     @ObservedObject var watchService: PhoneTranscriptionService
     @ObservedObject var history: RecordingHistory
+    @ObservedObject var connector = WatchPhoneConnector.shared
     @Binding var showSettings: Bool
 
     @State private var waveAmplitudes: [CGFloat] = (0..<20).map { _ in CGFloat.random(in: 0.15...0.5) }
 
     private var isWatchMode: Bool {
-        watchService.isWatchRecording && viewModel.state == .idle
+        (watchService.isWatchRecording || viewModel.isRemoteRecording) && viewModel.state == .idle
     }
 
     private var todayNoteCount: Int {
@@ -90,6 +91,18 @@ struct PhoneRecordingView: View {
                         .font(DS.Font.mono(size: 13))
                         .fontWeight(.bold)
                         .foregroundStyle(DS.recording)
+                }
+            } else {
+                // Connection indicator
+                HStack(spacing: 4) {
+                    Circle()
+                        .fill(connector.isReachable ? DS.success : DS.slate.opacity(0.3))
+                        .frame(width: 8, height: 8)
+                    if connector.isReachable {
+                        Text("Watch")
+                            .font(DS.Font.mono(size: 11))
+                            .foregroundStyle(DS.slateLight)
+                    }
                 }
             }
 
@@ -323,7 +336,7 @@ struct PhoneRecordingView: View {
                 }
             }
         }
-        .disabled(viewModel.state == .transcribing || viewModel.state == .saving)
+        .disabled(viewModel.state == .transcribing || viewModel.state == .saving || viewModel.isRemoteRecording)
     }
 
     // MARK: - Waveform Views
