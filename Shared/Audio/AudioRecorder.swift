@@ -1,6 +1,6 @@
 import AVFoundation
 
-final class AudioRecorder: AudioRecording, @unchecked Sendable {
+class AudioRecorder: AudioRecording, @unchecked Sendable {
 
     private let engine = AVAudioEngine()
     private let bufferQueue = DispatchQueue(label: "com.watchnotetaker.audiobuffer")

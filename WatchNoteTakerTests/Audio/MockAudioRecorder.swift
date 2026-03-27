@@ -1,19 +1,24 @@
 import AVFoundation
 @testable import WatchNoteTaker
 
-final class MockAudioRecorder: AudioRecording, @unchecked Sendable {
+/// Mock AudioRecorder for testing — overrides start/stop without actual audio hardware
+final class MockAudioRecorder: AudioRecorder {
     var startCalled = false
     var stopCalled = false
     var startError: Error?
     var stopError: Error?
     var bufferToReturn: AVAudioPCMBuffer?
 
-    func start() async throws {
+    override func start(streaming: Bool = false) async throws {
         startCalled = true
         if let error = startError { throw error }
     }
 
-    func stop() async throws -> AVAudioPCMBuffer {
+    override func start() async throws {
+        try await start(streaming: false)
+    }
+
+    override func stop() async throws -> AVAudioPCMBuffer {
         stopCalled = true
         if let error = stopError { throw error }
         guard let buffer = bufferToReturn else {

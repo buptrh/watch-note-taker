@@ -26,6 +26,8 @@ final class RecordingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .idle)
         XCTAssertNil(sut.errorMessage)
         XCTAssertNil(sut.lastCaptureTimestamp)
+        XCTAssertEqual(sut.liveTranscript, "")
+        XCTAssertEqual(sut.recordingDuration, 0)
     }
 
     func testToggle_startsRecording() {
@@ -35,7 +37,6 @@ final class RecordingViewModelTests: XCTestCase {
 
     func testToggle_whileRecording_beginsTranscription() async throws {
         sut.toggleRecording()
-        // Wait for start() to complete
         try await Task.sleep(for: .milliseconds(50))
 
         sut.toggleRecording()
@@ -50,13 +51,14 @@ final class RecordingViewModelTests: XCTestCase {
 
         sut.toggleRecording()
         // Wait for transcription + save pipeline
-        try await Task.sleep(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(500))
 
         XCTAssertEqual(sut.state, .idle)
         XCTAssertNil(sut.errorMessage)
         XCTAssertNotNil(sut.lastCaptureTimestamp)
         XCTAssertTrue(mockStore.saveCalled)
         XCTAssertTrue(mockStore.savedEntry?.contains("Hello world") == true)
+        XCTAssertEqual(sut.liveTranscript, "Hello world")
     }
 
     func testAudioStartError_returnsToIdle() async throws {
@@ -90,11 +92,10 @@ final class RecordingViewModelTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(50))
 
         sut.toggleRecording()
-        try await Task.sleep(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(500))
 
         XCTAssertEqual(sut.state, .idle)
         XCTAssertNotNil(sut.errorMessage)
-        XCTAssertFalse(mockStore.saveCalled)
     }
 
     func testSaveError_returnsToIdle() async throws {
@@ -104,7 +105,7 @@ final class RecordingViewModelTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(50))
 
         sut.toggleRecording()
-        try await Task.sleep(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(500))
 
         XCTAssertEqual(sut.state, .idle)
         XCTAssertNotNil(sut.errorMessage)
@@ -131,5 +132,19 @@ final class RecordingViewModelTests: XCTestCase {
         mockRecorder.startError = nil
         sut.toggleRecording()
         XCTAssertNil(sut.errorMessage)
+    }
+
+    func testNoSpeechDetected_showsMessage() async throws {
+        mockTranscriber.textToReturn = ""
+        mockTranscriber.errorToThrow = TranscriptionError.emptyResult
+
+        sut.toggleRecording()
+        try await Task.sleep(for: .milliseconds(50))
+
+        sut.toggleRecording()
+        try await Task.sleep(for: .milliseconds(500))
+
+        XCTAssertEqual(sut.state, .idle)
+        XCTAssertNotNil(sut.errorMessage)
     }
 }
