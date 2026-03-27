@@ -153,7 +153,7 @@ struct OnboardingView: View {
                     .font(.system(size: 15))
                     .foregroundStyle(DS.success)
             } else {
-                Text("Pick a folder to save your voice notes. If you use Obsidian, select your vault's inbox folder — notes appear there instantly.")
+                Text("Pick a folder to save your voice notes. If you use Obsidian, select a folder in your vault and notes will appear there automatically.")
                     .font(DS.Font.body(size: 15))
                     .foregroundStyle(DS.slateLight)
                     .multilineTextAlignment(.center)
