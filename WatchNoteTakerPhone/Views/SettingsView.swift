@@ -53,6 +53,12 @@ struct SettingsView: View {
                             .foregroundStyle(DS.slate)
                     }
                     .onTapGesture { showFolderPicker = true }
+
+                    Text("If you use Obsidian, select a folder inside your Obsidian vault.")
+                        .font(DS.Font.body(size: 12))
+                        .foregroundStyle(DS.slate)
+                        .padding(.horizontal, DS.Space.xs)
+                        .padding(.top, DS.Space.xs)
                 }
 
                 // TRANSCRIPTION section
