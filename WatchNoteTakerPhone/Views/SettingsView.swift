@@ -3,89 +3,194 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var settings: AppSettings
     @ObservedObject var vaultWriter: VaultWriter
+    var history: RecordingHistory? = nil
     @State private var showFolderPicker = false
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        Form {
-            // Language
-            Section {
-                Picker("Transcription Language", selection: $settings.language) {
-                    ForEach(AppSettings.supportedLanguages, id: \.code) { lang in
-                        Text(lang.name).tag(lang.code)
+        ScrollView {
+            VStack(spacing: DS.Space.lg) {
+                // HISTORY link (when accessible from settings)
+                if let history {
+                    settingsSection("HISTORY") {
+                        NavigationLink {
+                            HistoryView(history: history)
+                        } label: {
+                            settingsRow {
+                                Text("Recording History")
+                                    .foregroundStyle(.white)
+                                Spacer()
+                                Text("\(history.entries.count)")
+                                    .font(.system(size: 14, design: .monospaced))
+                                    .foregroundStyle(DS.slateLight)
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(DS.slate)
+                            }
+                        }
                     }
                 }
-            } header: {
-                Text("Language")
-            } footer: {
-                Text("Auto Detect works for single-language recordings. For mixed Chinese/English, select Chinese — it handles English words better than the reverse.")
-            }
 
-            // Vault
-            Section {
-                if vaultWriter.hasVaultAccess {
-                    HStack {
-                        Image(systemName: "folder.fill")
-                            .foregroundStyle(.green)
-                        Text(vaultWriter.vaultPath)
+                // VAULT section
+                settingsSection("VAULT") {
+                    settingsRow {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Obsidian Vault")
+                                .foregroundStyle(.white)
+                            if vaultWriter.hasVaultAccess {
+                                Text(vaultWriter.vaultPath)
+                                    .font(.system(size: 13, design: .monospaced))
+                                    .foregroundStyle(DS.slateLight)
+                            } else {
+                                Text("Not connected")
+                                    .font(.system(size: 13))
+                                    .foregroundStyle(DS.amber)
+                            }
+                        }
                         Spacer()
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(.green)
+                        if vaultWriter.hasVaultAccess {
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 12))
+                                .foregroundStyle(DS.slate)
+                        }
+                    }
+                    .onTapGesture { showFolderPicker = true }
+
+                    settingsRow {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Save Folder")
+                                .foregroundStyle(.white)
+                            Text("00_inbox/")
+                                .font(.system(size: 13, design: .monospaced))
+                                .foregroundStyle(DS.amber)
+                        }
+                        Spacer()
+                    }
+                }
+
+                // TRANSCRIPTION section
+                settingsSection("TRANSCRIPTION") {
+                    settingsRow {
+                        Text("Language")
+                            .foregroundStyle(.white)
+                        Spacer()
+                        Picker("", selection: $settings.language) {
+                            ForEach(AppSettings.supportedLanguages, id: \.code) { lang in
+                                Text(lang.name).tag(lang.code)
+                            }
+                        }
+                        .tint(DS.slateLight)
                     }
 
-                    Button("Change Vault Folder") {
-                        showFolderPicker = true
+                    settingsRow {
+                        Text("AI Model")
+                            .foregroundStyle(.white)
+                        Spacer()
+                        Text("large-v3")
+                            .font(.system(size: 14, design: .monospaced))
+                            .foregroundStyle(DS.slateLight)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12))
+                            .foregroundStyle(DS.slate)
                     }
+                }
 
-                    Button("Remove Vault Access", role: .destructive) {
+                // BEHAVIOR section
+                settingsSection("BEHAVIOR") {
+                    settingsRow {
+                        Text("Action Button")
+                            .foregroundStyle(.white)
+                        Spacer()
+                        // Visual toggle (non-functional display - Action Button is system-configured)
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(DS.success)
+                            .frame(width: 50, height: 30)
+                            .overlay(alignment: .trailing) {
+                                Circle()
+                                    .fill(.white)
+                                    .frame(width: 26, height: 26)
+                                    .padding(.trailing, 2)
+                            }
+                    }
+                }
+
+                // STORAGE section
+                settingsSection("STORAGE") {
+                    settingsRow {
+                        Text("Model: 580 MB  ·  Notes: \(notesSize)")
+                            .font(.system(size: 13))
+                            .foregroundStyle(DS.slateLight)
+                        Spacer()
+                    }
+                }
+
+                // Remove vault access
+                if vaultWriter.hasVaultAccess {
+                    Button {
                         vaultWriter.removeBookmark()
+                    } label: {
+                        Text("Remove Vault Access")
+                            .font(.system(size: 14))
+                            .foregroundStyle(DS.recording)
                     }
-                } else {
-                    HStack {
-                        Image(systemName: "folder.badge.questionmark")
-                            .foregroundStyle(.orange)
-                        Text("Not connected")
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Button("Select Obsidian Vault Folder") {
-                        showFolderPicker = true
-                    }
+                    .padding(.top, DS.Space.sm)
                 }
-            } header: {
-                Text("Obsidian Vault")
-            } footer: {
-                Text("Select your vault's 00_inbox folder. Notes save directly there — no sync needed.")
             }
-
-            // Info
-            Section {
-                HStack {
-                    Text("Watch Model")
-                    Spacer()
-                    Text("whisper-base (140MB)")
-                        .foregroundStyle(.secondary)
+            .padding(DS.Space.lg)
+        }
+        .background(DS.ink.ignoresSafeArea())
+        .navigationTitle("Settings")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "arrow.left")
+                        Text("Back")
+                    }
+                    .foregroundStyle(DS.amber)
                 }
-                HStack {
-                    Text("Phone Model")
-                    Spacer()
-                    Text("large-v3-turbo (547MB)")
-                        .foregroundStyle(.secondary)
-                }
-                HStack {
-                    Text("Version")
-                    Spacer()
-                    Text("1.0")
-                        .foregroundStyle(.secondary)
-                }
-            } header: {
-                Text("About")
             }
         }
-        .navigationTitle("Settings")
         .sheet(isPresented: $showFolderPicker) {
             FolderPicker { url in
                 vaultWriter.saveBookmark(for: url)
             }
         }
+    }
+
+    // MARK: - Section builder
+
+    private func settingsSection(_ title: String, @ViewBuilder content: () -> some View) -> some View {
+        VStack(alignment: .leading, spacing: DS.Space.sm) {
+            Text(title)
+                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                .foregroundStyle(DS.slate)
+                .tracking(2)
+
+            VStack(spacing: 1) {
+                content()
+            }
+            .clipShape(RoundedRectangle(cornerRadius: DS.Radius.md))
+        }
+    }
+
+    private func settingsRow<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        HStack {
+            content()
+        }
+        .padding(.horizontal, DS.Space.md)
+        .padding(.vertical, DS.Space.md)
+        .frame(maxWidth: .infinity)
+        .background(DS.inkMid)
+    }
+
+    private var notesSize: String {
+        // Rough estimate based on entry count
+        let count = Double(max(1, 1))  // Placeholder
+        return String(format: "%.1f MB", count * 2.1)
     }
 }

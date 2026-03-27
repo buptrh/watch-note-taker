@@ -11,56 +11,59 @@ struct OnboardingView: View {
     @State private var showFolderPicker = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Progress dots
-            HStack(spacing: 8) {
-                ForEach(0..<3) { step in
-                    Circle()
-                        .fill(step <= currentStep ? Color.blue : Color.gray.opacity(0.3))
-                        .frame(width: 8, height: 8)
+        ZStack {
+            DS.ink.ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                // Progress dots
+                HStack(spacing: DS.Space.sm) {
+                    ForEach(0..<3) { step in
+                        Circle()
+                            .fill(step <= currentStep ? DS.amber : DS.slate.opacity(0.3))
+                            .frame(width: 8, height: 8)
+                    }
                 }
-            }
-            .padding(.top, 20)
+                .padding(.top, 20)
 
-            Spacer()
+                Spacer()
 
-            // Step content
-            switch currentStep {
-            case 0:
-                welcomeStep
-            case 1:
-                microphoneStep
-            case 2:
-                vaultStep
-            default:
-                EmptyView()
-            }
-
-            Spacer()
-
-            // Bottom button
-            Button {
-                handleNext()
-            } label: {
-                Text(buttonLabel)
-                    .font(.headline)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(buttonEnabled ? Color.blue : Color.gray, in: RoundedRectangle(cornerRadius: 14))
-            }
-            .disabled(!buttonEnabled)
-            .padding(.horizontal, 24)
-            .padding(.bottom, 16)
-
-            // Skip option for vault step
-            if currentStep == 2 {
-                Button("Skip — I'll set up later") {
-                    completeOnboarding()
+                // Step content
+                switch currentStep {
+                case 0:
+                    welcomeStep
+                case 1:
+                    microphoneStep
+                case 2:
+                    vaultStep
+                default:
+                    EmptyView()
                 }
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .padding(.bottom, 24)
+
+                Spacer()
+
+                // Bottom button
+                Button {
+                    handleNext()
+                } label: {
+                    Text(buttonLabel)
+                        .font(.headline)
+                        .foregroundStyle(DS.ink)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(DS.amber, in: RoundedRectangle(cornerRadius: DS.Radius.xl))
+                }
+                .padding(.horizontal, DS.Space.lg)
+                .padding(.bottom, DS.Space.md)
+
+                // Skip option for vault step
+                if currentStep == 2 {
+                    Button("Skip — I'll set up later") {
+                        completeOnboarding()
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(DS.slateLight)
+                    .padding(.bottom, DS.Space.lg)
+                }
             }
         }
         .sheet(isPresented: $showFolderPicker) {
@@ -74,17 +77,25 @@ struct OnboardingView: View {
 
     private var welcomeStep: some View {
         VStack(spacing: 20) {
-            Image(systemName: "mic.circle.fill")
-                .font(.system(size: 80))
-                .foregroundStyle(.blue)
+            ZStack {
+                Circle()
+                    .stroke(DS.amber.opacity(0.3), lineWidth: 3)
+                    .frame(width: 100, height: 100)
+                Circle()
+                    .fill(DS.amber)
+                    .frame(width: 84, height: 84)
+                Image(systemName: "mic.fill")
+                    .font(.system(size: 36))
+                    .foregroundStyle(DS.ink)
+            }
 
             Text("WatchNoteTaker")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+                .font(.system(size: 28, weight: .bold, design: .serif))
+                .foregroundStyle(.white)
 
             Text("Record voice notes on your Apple Watch or iPhone. Transcribed instantly and saved to your Obsidian vault.")
-                .font(.body)
-                .foregroundStyle(.secondary)
+                .font(.system(size: 15))
+                .foregroundStyle(DS.slateLight)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
         }
@@ -92,22 +103,27 @@ struct OnboardingView: View {
 
     private var microphoneStep: some View {
         VStack(spacing: 20) {
-            Image(systemName: micGranted ? "mic.fill" : "mic.badge.plus")
-                .font(.system(size: 80))
-                .foregroundStyle(micGranted ? .green : .orange)
+            ZStack {
+                Circle()
+                    .fill(micGranted ? DS.success.opacity(0.15) : DS.amber.opacity(0.15))
+                    .frame(width: 100, height: 100)
+                Image(systemName: micGranted ? "mic.fill" : "mic.badge.plus")
+                    .font(.system(size: 44))
+                    .foregroundStyle(micGranted ? DS.success : DS.amber)
+            }
 
             Text("Microphone Access")
-                .font(.title)
-                .fontWeight(.bold)
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(.white)
 
             if micGranted {
                 Text("Microphone access granted!")
-                    .font(.body)
-                    .foregroundStyle(.green)
+                    .font(.system(size: 15))
+                    .foregroundStyle(DS.success)
             } else {
                 Text("We need microphone access to record your voice notes. Audio is processed on-device — nothing is sent to a server.")
-                    .font(.body)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 15))
+                    .foregroundStyle(DS.slateLight)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
@@ -119,22 +135,27 @@ struct OnboardingView: View {
 
     private var vaultStep: some View {
         VStack(spacing: 20) {
-            Image(systemName: vaultWriter.hasVaultAccess ? "folder.fill.badge.checkmark" : "folder.badge.plus")
-                .font(.system(size: 80))
-                .foregroundStyle(vaultWriter.hasVaultAccess ? .green : .blue)
+            ZStack {
+                Circle()
+                    .fill(vaultWriter.hasVaultAccess ? DS.success.opacity(0.15) : DS.amber.opacity(0.15))
+                    .frame(width: 100, height: 100)
+                Image(systemName: vaultWriter.hasVaultAccess ? "folder.fill.badge.checkmark" : "folder.badge.plus")
+                    .font(.system(size: 44))
+                    .foregroundStyle(vaultWriter.hasVaultAccess ? DS.success : DS.amber)
+            }
 
             Text("Obsidian Vault")
-                .font(.title)
-                .fontWeight(.bold)
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(.white)
 
             if vaultWriter.hasVaultAccess {
                 Text("Connected to: \(vaultWriter.vaultPath)")
-                    .font(.body)
-                    .foregroundStyle(.green)
+                    .font(.system(size: 15))
+                    .foregroundStyle(DS.success)
             } else {
                 Text("Select your Obsidian vault's 00_inbox folder to save voice notes directly into your vault.")
-                    .font(.body)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 15))
+                    .foregroundStyle(DS.slateLight)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
@@ -149,15 +170,6 @@ struct OnboardingView: View {
         case 1: return micGranted ? "Continue" : "Grant Microphone Access"
         case 2: return vaultWriter.hasVaultAccess ? "Done" : "Select Vault Folder"
         default: return "Continue"
-        }
-    }
-
-    private var buttonEnabled: Bool {
-        switch currentStep {
-        case 0: return true
-        case 1: return true
-        case 2: return true
-        default: return true
         }
     }
 

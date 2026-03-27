@@ -6,19 +6,28 @@ struct HistoryView: View {
     var body: some View {
         Group {
             if history.entries.isEmpty {
-                ContentUnavailableView(
-                    "No Recordings",
-                    systemImage: "mic.slash",
-                    description: Text("Your voice notes will appear here")
-                )
+                VStack(spacing: DS.Space.md) {
+                    Image(systemName: "mic.slash")
+                        .font(.system(size: 40))
+                        .foregroundStyle(DS.slate)
+                    Text("No Recordings")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Text("Your voice notes will appear here")
+                        .font(.system(size: 14))
+                        .foregroundStyle(DS.slateLight)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(DS.ink.ignoresSafeArea())
             } else {
                 List {
                     ForEach(groupedByDate, id: \.key) { date, entries in
-                        Section(header: Text(formatDate(date))) {
+                        Section(header: Text(formatDate(date)).foregroundStyle(DS.slateLight)) {
                             ForEach(entries) { entry in
                                 NavigationLink(destination: HistoryDetailView(entry: entry)) {
                                     HistoryRow(entry: entry)
                                 }
+                                .listRowBackground(DS.inkMid)
                             }
                             .onDelete { offsets in
                                 deleteEntries(offsets, in: entries)
@@ -26,16 +35,20 @@ struct HistoryView: View {
                         }
                     }
                 }
+                .scrollContentBackground(.hidden)
+                .background(DS.ink.ignoresSafeArea())
                 .listStyle(.insetGrouped)
             }
         }
         .navigationTitle("History")
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbar {
             if !history.entries.isEmpty {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Clear All", role: .destructive) {
                         history.clearAll()
                     }
+                    .foregroundStyle(DS.recording)
                 }
             }
         }
@@ -67,7 +80,7 @@ struct HistoryView: View {
     }
 }
 
-// MARK: - Detail View (full text + copy + share)
+// MARK: - Detail View
 
 struct HistoryDetailView: View {
     let entry: RecordingEntry
@@ -75,36 +88,38 @@ struct HistoryDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: DS.Space.md) {
                 // Header
                 HStack {
                     Image(systemName: entry.source == "watch" ? "applewatch" : "iphone")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(DS.slateLight)
                     Text(formatDateTime(entry.date))
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(DS.slateLight)
                     Spacer()
                     Text(formatDuration(entry.duration))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 2)
-                        .background(.quaternary, in: Capsule())
+                        .font(.system(size: 12, design: .monospaced))
+                        .foregroundStyle(DS.slateLight)
+                        .padding(.horizontal, DS.Space.sm)
+                        .padding(.vertical, DS.Space.xs)
+                        .background(DS.inkMid, in: Capsule())
                 }
 
                 // Full text
                 Text(entry.text)
-                    .font(.body)
+                    .font(.system(size: 16))
+                    .foregroundStyle(.white)
                     .textSelection(.enabled)
             }
-            .padding()
+            .padding(DS.Space.lg)
         }
+        .background(DS.ink.ignoresSafeArea())
         .navigationTitle(formatTime(entry.date))
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                HStack(spacing: 16) {
-                    // Copy button
+                HStack(spacing: DS.Space.md) {
                     Button {
                         UIPasteboard.general.string = entry.text
                         copied = true
@@ -113,11 +128,12 @@ struct HistoryDetailView: View {
                         }
                     } label: {
                         Image(systemName: copied ? "checkmark" : "doc.on.doc")
+                            .foregroundStyle(DS.amber)
                     }
 
-                    // Share button
                     ShareLink(item: entry.text) {
                         Image(systemName: "square.and.arrow.up")
+                            .foregroundStyle(DS.amber)
                     }
                 }
             }
@@ -156,28 +172,29 @@ struct HistoryRow: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Image(systemName: entry.source == "watch" ? "applewatch" : "iphone")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(DS.slateLight)
                     .font(.caption)
 
                 Text(formatTime(entry.date))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 12, design: .monospaced))
+                    .foregroundStyle(DS.slateLight)
 
                 Spacer()
 
                 Text(formatDuration(entry.duration))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
-                    .background(.quaternary, in: Capsule())
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundStyle(DS.slate)
+                    .padding(.horizontal, DS.Space.sm)
+                    .padding(.vertical, DS.Space.xs)
+                    .background(DS.ink, in: Capsule())
             }
 
             Text(entry.text)
-                .font(.body)
+                .font(.system(size: 15))
+                .foregroundStyle(.white.opacity(0.85))
                 .lineLimit(3)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, DS.Space.xs)
     }
 
     private func formatTime(_ date: Date) -> String {

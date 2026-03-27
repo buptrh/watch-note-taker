@@ -11,8 +11,8 @@ final class DemoFlowTest: XCTestCase {
     }
 
     func testFullCaptureFlow() {
-        // State 1: Ready
-        let readyText = app.staticTexts["Ready"]
+        // State 1: Idle — shows "WatchNote" and "Press Action Button"
+        let readyText = app.staticTexts["WatchNote"]
         XCTAssertTrue(readyText.waitForExistence(timeout: 5))
         sleep(1)
         screenshot("1_Ready")

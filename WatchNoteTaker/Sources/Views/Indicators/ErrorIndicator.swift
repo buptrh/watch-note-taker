@@ -5,18 +5,20 @@ struct ErrorIndicator: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 8) {
+            VStack(spacing: DS.Space.sm) {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(.system(size: 28))
-                    .foregroundStyle(.yellow)
+                    .foregroundStyle(DS.amber)
                 Text(message)
                     .font(.system(size: 10))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(DS.slateLight)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.horizontal, 4)
+            .padding(.horizontal, DS.Space.xs)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(DS.ink)
     }
 }
 

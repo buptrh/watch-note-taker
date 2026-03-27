@@ -3,30 +3,47 @@ import SwiftUI
 struct ProcessingIndicator: View {
     var existingText: String?
 
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 6) {
-                ProgressView()
-                    .tint(.orange)
-                Text("Transcribing...")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+    @State private var rotation: Double = 0
 
-                if let existingText, !existingText.isEmpty {
+    var body: some View {
+        VStack(spacing: DS.Space.sm) {
+            Spacer()
+
+            // Circular progress ring
+            Circle()
+                .trim(from: 0, to: 0.7)
+                .stroke(DS.amber, lineWidth: 3)
+                .frame(width: 36, height: 36)
+                .rotationEffect(.degrees(rotation))
+                .onAppear {
+                    withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
+                        rotation = 360
+                    }
+                }
+
+            Text("Transcribing...")
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(DS.amber)
+
+            if let existingText, !existingText.isEmpty {
+                ScrollView {
                     Text(existingText)
                         .font(.system(size: 11))
                         .foregroundStyle(.white.opacity(0.7))
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.horizontal, 8)
-                        .padding(.top, 4)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, DS.Space.sm)
                 }
+                .frame(maxHeight: 60)
             }
-            .padding(.top, 8)
+
+            Spacer()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(DS.ink)
     }
 }
 
 #Preview {
-    ProcessingIndicator(existingText: "Some text already transcribed")
+    ProcessingIndicator(existingText: "I need to remember to check the API rate limits before deploying the update.")
 }

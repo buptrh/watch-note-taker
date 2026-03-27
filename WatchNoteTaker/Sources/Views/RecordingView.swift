@@ -33,14 +33,20 @@ struct RecordingView: View {
         }
     }
 
+    private var currentFilename: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return "watch_\(formatter.string(from: Date())).md"
+    }
+
     var body: some View {
         contentView
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(DS.ink)
             .onTapGesture {
                 let wasRecording = viewModel.state == .recording
                 viewModel.toggleRecording()
 
-                // Haptic feedback
                 if wasRecording {
                     WKInterfaceDevice.current().play(.stop)
                 } else if viewModel.state == .recording {
@@ -62,32 +68,19 @@ struct RecordingView: View {
         case .ready:
             ReadyIndicator()
         case .recording:
-            recordingView
+            RecordingIndicator(
+                duration: viewModel.recordingDuration,
+                liveTranscript: viewModel.liveTranscript
+            )
         case .processing:
             ProcessingIndicator(existingText: viewModel.liveTranscript.isEmpty ? nil : viewModel.liveTranscript)
         case .confirmation:
-            ConfirmationIndicator(text: viewModel.lastTranscribedText)
+            ConfirmationIndicator(
+                text: viewModel.lastTranscribedText,
+                filename: currentFilename
+            )
         case .error(let message):
             ErrorIndicator(message: message)
-        }
-    }
-
-    private var recordingView: some View {
-        ScrollView {
-            VStack(spacing: 6) {
-                RecordingIndicator()
-
-                if !viewModel.liveTranscript.isEmpty {
-                    Text(viewModel.liveTranscript)
-                        .font(.system(size: 11))
-                        .foregroundStyle(.white.opacity(0.8))
-                        .multilineTextAlignment(.center)
-                        .lineLimit(6)
-                        .padding(.horizontal, 8)
-                        .padding(.top, 4)
-                }
-            }
-            .padding(.top, 8)
         }
     }
 }
