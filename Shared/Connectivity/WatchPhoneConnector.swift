@@ -3,18 +3,22 @@ import WatchConnectivity
 import AVFoundation
 
 /// Handles WatchConnectivity between watch and phone.
-/// Hybrid delivery: sendMessage when reachable, transferFile when not.
+/// Hybrid delivery: sendMessage when reachable (with retry), transferFile as fallback.
 final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, @unchecked Sendable {
 
     static let shared = WatchPhoneConnector()
 
     @Published var isReachable = false
+    @Published var pendingTransfers: Int = 0
 
     /// Called on the phone when an audio chunk arrives (real-time or queued file)
     var onAudioChunkReceived: ((Data, Date) -> Void)?
 
     /// Called on the watch when transcription text comes back from the phone
     var onTranscriptionReceived: ((String) -> Void)?
+
+    private let maxRetries = 3
+    private let retryDelay: TimeInterval = 1.0
 
     private override init() {
         super.init()
@@ -27,31 +31,44 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         session.activate()
     }
 
-    // MARK: - Watch → Phone: Send audio chunk (hybrid)
+    // MARK: - Watch → Phone: Send audio chunk (hybrid with retry)
 
-    /// Send audio chunk — uses sendMessage if reachable, transferFile if not
     func sendAudioChunk(_ audioData: Data, recordingDate: Date) {
         let session = WCSession.default
 
         if session.isReachable {
-            // Real-time delivery
-            let message: [String: Any] = [
-                "type": "audioChunk",
-                "audio": audioData,
-                "date": recordingDate.timeIntervalSince1970
-            ]
-            session.sendMessage(message, replyHandler: nil) { [weak self] error in
-                // sendMessage failed — fall back to transferFile
-                print("sendMessage failed, queueing file: \(error.localizedDescription)")
-                self?.queueAudioFile(audioData, recordingDate: recordingDate)
-            }
+            sendMessageWithRetry(audioData: audioData, date: recordingDate, attempt: 1)
         } else {
-            // Phone not reachable — queue for later
             queueAudioFile(audioData, recordingDate: recordingDate)
         }
     }
 
-    /// Queue audio as a file transfer (delivered when phone app opens)
+    private func sendMessageWithRetry(audioData: Data, date: Date, attempt: Int) {
+        let message: [String: Any] = [
+            "type": "audioChunk",
+            "audio": audioData,
+            "date": date.timeIntervalSince1970
+        ]
+
+        WCSession.default.sendMessage(message, replyHandler: nil) { [weak self] error in
+            guard let self else { return }
+
+            if attempt < self.maxRetries {
+                // Retry after delay
+                DispatchQueue.global().asyncAfter(deadline: .now() + self.retryDelay) {
+                    if WCSession.default.isReachable {
+                        self.sendMessageWithRetry(audioData: audioData, date: date, attempt: attempt + 1)
+                    } else {
+                        self.queueAudioFile(audioData, recordingDate: date)
+                    }
+                }
+            } else {
+                // Max retries reached — fall back to file transfer
+                self.queueAudioFile(audioData, recordingDate: date)
+            }
+        }
+    }
+
     private func queueAudioFile(_ audioData: Data, recordingDate: Date) {
         let tempURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("chunk_\(Int(recordingDate.timeIntervalSince1970))_\(UUID().uuidString.prefix(8)).wav")
@@ -63,12 +80,14 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
                 "date": recordingDate.timeIntervalSince1970
             ]
             WCSession.default.transferFile(tempURL, metadata: metadata)
+            DispatchQueue.main.async {
+                self.pendingTransfers += 1
+            }
         } catch {
             print("Failed to queue audio file: \(error)")
         }
     }
 
-    /// Send final chunk marker
     func sendRecordingComplete(date: Date) {
         let session = WCSession.default
 
@@ -77,9 +96,15 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
                 "type": "recordingComplete",
                 "date": date.timeIntervalSince1970
             ]
-            session.sendMessage(message, replyHandler: nil)
+            session.sendMessage(message, replyHandler: nil) { [weak self] _ in
+                // Retry once
+                DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+                    if WCSession.default.isReachable {
+                        WCSession.default.sendMessage(message, replyHandler: nil)
+                    }
+                }
+            }
         }
-        // If not reachable, phone will process queued files when it opens
     }
 
     // MARK: - Phone → Watch: Send transcription back
@@ -129,8 +154,35 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         do {
             let audioData = try Data(contentsOf: file.fileURL)
             onAudioChunkReceived?(audioData, date)
+            DispatchQueue.main.async {
+                self.pendingTransfers = max(0, self.pendingTransfers - 1)
+            }
         } catch {
             print("Failed to read transferred file: \(error)")
+        }
+    }
+
+    // File transfer completed (watch side confirmation)
+    func session(_ session: WCSession, didFinish fileTransfer: WCSessionFileTransfer, error: Error?) {
+        if let error {
+            // Transfer failed — retry by re-queueing
+            if let metadata = fileTransfer.file.metadata,
+               let timestamp = metadata["date"] as? TimeInterval {
+                let date = Date(timeIntervalSince1970: timestamp)
+                do {
+                    let data = try Data(contentsOf: fileTransfer.file.fileURL)
+                    DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+                        self.queueAudioFile(data, recordingDate: date)
+                    }
+                } catch {
+                    print("Retry failed — could not read file: \(error)")
+                }
+            }
+            print("File transfer failed: \(error.localizedDescription)")
+        } else {
+            DispatchQueue.main.async {
+                self.pendingTransfers = max(0, self.pendingTransfers - 1)
+            }
         }
     }
 

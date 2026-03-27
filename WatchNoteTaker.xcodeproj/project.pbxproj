@@ -34,6 +34,7 @@
 		5AE6CC5D2ECACCDA886DAF55 /* PhoneApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1170AF6283AB10C7D7FE84 /* PhoneApp.swift */; };
 		5F71C9C2586713F577AF1794 /* Transcribing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C5EFA0D2FE5746EB439594 /* Transcribing.swift */; };
 		604F5961E1EDDEC7C6432437 /* NoteStoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3459B7A1BC86817DE927F2E0 /* NoteStoring.swift */; };
+		61561AEE05F1B749F66AE836 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7648AB2322965FF216BC1828 /* WatchComplication.swift */; };
 		67F9DEF492C205B610D67290 /* PhoneRecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E376BA456E09F1993FBB97A /* PhoneRecordingView.swift */; };
 		6F1EDAFEE53C3A4521FB8F08 /* DemoFlowTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB0AB35F3F6B8248317C9D5 /* DemoFlowTest.swift */; };
 		7177A68D7BCC4EF603FC3E47 /* RecordingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B33034161EDA8675101CC5F /* RecordingViewModel.swift */; };
@@ -118,6 +119,7 @@
 		6985A04CCE4D12DA074C11A9 /* PhoneTranscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneTranscriptionService.swift; sourceTree = "<group>"; };
 		6DCF524937B7CA0BFD0473B6 /* MockTranscriptionForDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTranscriptionForDemo.swift; sourceTree = "<group>"; };
 		716FC6BF259EF0E4B4768E6F /* AudioRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecording.swift; sourceTree = "<group>"; };
+		7648AB2322965FF216BC1828 /* WatchComplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplication.swift; sourceTree = "<group>"; };
 		81ED1F6169522DD4F383EAC8 /* MarkdownFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownFormatterTests.swift; sourceTree = "<group>"; };
 		83160A7330554086FE7EBF8F /* ActionButtonIntentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonIntentTests.swift; sourceTree = "<group>"; };
 		8419EE9079608BB69B29F060 /* VADChunker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VADChunker.swift; sourceTree = "<group>"; };
@@ -416,6 +418,14 @@
 			path = WatchNoteTakerPhone;
 			sourceTree = "<group>";
 		};
+		C79F7F613EB7D6C009762179 /* Complication */ = {
+			isa = PBXGroup;
+			children = (
+				7648AB2322965FF216BC1828 /* WatchComplication.swift */,
+			);
+			path = Complication;
+			sourceTree = "<group>";
+		};
 		CDCE4DAC305351B1785035AD /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -451,6 +461,7 @@
 			isa = PBXGroup;
 			children = (
 				AF638E41E47BCF6C6E18178E /* Audio */,
+				C79F7F613EB7D6C009762179 /* Complication */,
 				A062994AC617C047FF60C8C4 /* Transcription */,
 				A1EFC6EACD01882BFBA97C4B /* Views */,
 			);
@@ -631,6 +642,7 @@
 				4E370EFADEE6E013918E36F2 /* TranscriptionEngine.swift in Sources */,
 				D138BC95E07D4B5C4391E523 /* TranscriptionError.swift in Sources */,
 				4D42DA4E1B17107D1E8CFEAC /* VADChunker.swift in Sources */,
+				61561AEE05F1B749F66AE836 /* WatchComplication.swift in Sources */,
 				7EF029B5C8A1D6235FAD01AE /* WatchNoteTakerApp.swift in Sources */,
 				8E58B08042BC9AEFA468AEA4 /* WatchPhoneConnector.swift in Sources */,
 			);
