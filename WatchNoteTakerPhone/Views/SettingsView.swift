@@ -98,19 +98,17 @@ struct SettingsView: View {
                 // BEHAVIOR section
                 settingsSection("BEHAVIOR") {
                     settingsRow {
-                        Text("Action Button")
-                            .foregroundStyle(.white)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Action Button")
+                                .foregroundStyle(.white)
+                            Text("Go to Watch Settings → Action Button to assign WatchNoteTaker")
+                                .font(DS.Font.body(size: 12))
+                                .foregroundStyle(DS.slateLight)
+                        }
                         Spacer()
-                        // Visual toggle (non-functional display - Action Button is system-configured)
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(DS.success)
-                            .frame(width: 50, height: 30)
-                            .overlay(alignment: .trailing) {
-                                Circle()
-                                    .fill(.white)
-                                    .frame(width: 26, height: 26)
-                                    .padding(.trailing, 2)
-                            }
+                        Image(systemName: "arrow.up.forward.app")
+                            .font(.system(size: 14))
+                            .foregroundStyle(DS.slate)
                     }
                 }
 
