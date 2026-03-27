@@ -20,4 +20,5 @@ WatchNoteTaker/Resources/whisper-model.bundle/
 WatchNoteTaker/Resources/*.mlmodelc/
 WatchNoteTaker/Resources/config.json
 WatchNoteTaker/Resources/generation_config.json
+WatchNoteTakerPhone/Resources/whisper-model.bundle/
 *.xcuserstate

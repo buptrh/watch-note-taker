@@ -18,11 +18,10 @@ final class TranscriptionEngine: Transcribing, @unchecked Sendable {
         try writeBuffer(normalized, to: tempURL)
         defer { try? FileManager.default.removeItem(at: tempURL) }
 
-        // Auto-detect language (supports English, Chinese, and 90+ other languages)
+        // Chinese mode handles English code-switching well; English mode does not handle Chinese
         let options = DecodingOptions(
             verbose: false,
-            language: nil,
-            detectLanguage: true,
+            language: "zh",
             skipSpecialTokens: true,
             withoutTimestamps: true
         )

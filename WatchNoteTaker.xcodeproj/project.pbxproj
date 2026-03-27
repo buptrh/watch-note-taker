@@ -38,6 +38,7 @@
 		8E5DFCA49CB1821427BE370A /* NoteStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BE5126FBCCB4248E56A6F1 /* NoteStoreError.swift */; };
 		9103DDAC8F9AF46BBB68D58B /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BDAF1590D3ECFC876D0A79 /* MarkdownFormatter.swift */; };
 		92A48B83ED8C6897F539EFC7 /* RecordingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97430E3750310F2DC4756663 /* RecordingState.swift */; };
+		9867034100EB128EEAAB4C55 /* whisper-model.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 566A6DA49E948C66CD69E96F /* whisper-model.bundle */; };
 		A3BBEB19D88797896F502DA6 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEDD635996F8B2509399DF3 /* AudioRecorder.swift */; };
 		A426E5D480EFF3E634EAF5AE /* NoteStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4182372D0C1688769A8182F7 /* NoteStoreTests.swift */; };
 		A74607336CDFE5F9A55036D4 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEDD635996F8B2509399DF3 /* AudioRecorder.swift */; };
@@ -92,6 +93,7 @@
 		425AEA9E64E4466378509BF7 /* TranscriptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionEngine.swift; sourceTree = "<group>"; };
 		43D0439F90FCBEAAFD4927F5 /* RecordingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingIndicator.swift; sourceTree = "<group>"; };
 		4B63C53E7C3F5A50B21330B8 /* NoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteStore.swift; sourceTree = "<group>"; };
+		566A6DA49E948C66CD69E96F /* whisper-model.bundle */ = {isa = PBXFileReference; lastKnownFileType = wrapper.cfbundle; path = "whisper-model.bundle"; sourceTree = "<group>"; };
 		58592AC8AA7D9B8CFEEFF388 /* WatchNoteTaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchNoteTaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		624C68A84B11F07CF758D02B /* MockNoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNoteStore.swift; sourceTree = "<group>"; };
 		63C6E30B489412167DC4D921 /* WatchNoteTakerPhone.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WatchNoteTakerPhone.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -215,6 +217,14 @@
 				B6323F3D855E09CB171DCA62 /* MockAudioRecorder.swift */,
 			);
 			path = Audio;
+			sourceTree = "<group>";
+		};
+		52D0A075FA8DC0FF4999F143 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				566A6DA49E948C66CD69E96F /* whisper-model.bundle */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		5C23892925D86DD42A043984 /* Shared */ = {
@@ -353,6 +363,7 @@
 			isa = PBXGroup;
 			children = (
 				CDCE4DAC305351B1785035AD /* App */,
+				52D0A075FA8DC0FF4999F143 /* Resources */,
 				6442610F0594BC623FE76820 /* Views */,
 			);
 			path = WatchNoteTakerPhone;
@@ -434,6 +445,7 @@
 			buildConfigurationList = 97048A99E179FBD5F08E15EE /* Build configuration list for PBXNativeTarget "WatchNoteTakerPhone" */;
 			buildPhases = (
 				F2D62D656113FE9C4C372E6C /* Sources */,
+				F3E76C8E6D3CFD1BB08EFF5E /* Resources */,
 				5D921A518EA1066A5D25120C /* Frameworks */,
 			);
 			buildRules = (
@@ -530,6 +542,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F3E76C8E6D3CFD1BB08EFF5E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9867034100EB128EEAAB4C55 /* whisper-model.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		153477C8473543260055CB99 /* Sources */ = {
