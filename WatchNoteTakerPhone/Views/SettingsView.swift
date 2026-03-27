@@ -31,41 +31,28 @@ struct SettingsView: View {
                     }
                 }
 
-                // VAULT section
-                settingsSection("VAULT") {
-                    settingsRow {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Obsidian Vault")
-                                .foregroundStyle(.white)
-                            if vaultWriter.hasVaultAccess {
-                                Text(vaultWriter.vaultPath)
-                                    .font(.system(size: 13, design: .monospaced))
-                                    .foregroundStyle(DS.slateLight)
-                            } else {
-                                Text("Not connected")
-                                    .font(.system(size: 13))
-                                    .foregroundStyle(DS.amber)
-                            }
-                        }
-                        Spacer()
-                        if vaultWriter.hasVaultAccess {
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 12))
-                                .foregroundStyle(DS.slate)
-                        }
-                    }
-                    .onTapGesture { showFolderPicker = true }
-
+                // SAVE LOCATION section
+                settingsSection("SAVE LOCATION") {
                     settingsRow {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Save Folder")
                                 .foregroundStyle(.white)
-                            Text("00_inbox/")
-                                .font(.system(size: 13, design: .monospaced))
-                                .foregroundStyle(DS.amber)
+                            if vaultWriter.hasVaultAccess {
+                                Text(vaultWriter.vaultPath)
+                                    .font(DS.Font.mono(size: 13))
+                                    .foregroundStyle(DS.slateLight)
+                            } else {
+                                Text("No folder selected")
+                                    .font(DS.Font.body(size: 13))
+                                    .foregroundStyle(DS.amber)
+                            }
                         }
                         Spacer()
+                        Image(systemName: vaultWriter.hasVaultAccess ? "chevron.right" : "folder.badge.plus")
+                            .font(.system(size: 12))
+                            .foregroundStyle(DS.slate)
                     }
+                    .onTapGesture { showFolderPicker = true }
                 }
 
                 // TRANSCRIPTION section
@@ -127,7 +114,7 @@ struct SettingsView: View {
                     Button {
                         vaultWriter.removeBookmark()
                     } label: {
-                        Text("Remove Vault Access")
+                        Text("Remove Save Folder")
                             .font(.system(size: 14))
                             .foregroundStyle(DS.recording)
                     }

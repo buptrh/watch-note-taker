@@ -144,16 +144,16 @@ struct OnboardingView: View {
                     .foregroundStyle(vaultWriter.hasVaultAccess ? DS.success : DS.amber)
             }
 
-            Text("Obsidian Vault")
+            Text("Save Location")
                 .font(DS.Font.heading(size: 24))
                 .foregroundStyle(.white)
 
             if vaultWriter.hasVaultAccess {
-                Text("Connected to: \(vaultWriter.vaultPath)")
+                Text("Saving to: \(vaultWriter.vaultPath)")
                     .font(.system(size: 15))
                     .foregroundStyle(DS.success)
             } else {
-                Text("Select your Obsidian vault's 00_inbox folder to save voice notes directly into your vault.")
+                Text("Pick a folder to save your voice notes. If you use Obsidian, select your vault's inbox folder — notes appear there instantly.")
                     .font(DS.Font.body(size: 15))
                     .foregroundStyle(DS.slateLight)
                     .multilineTextAlignment(.center)
@@ -168,7 +168,7 @@ struct OnboardingView: View {
         switch currentStep {
         case 0: return "Get Started"
         case 1: return micGranted ? "Continue" : "Grant Microphone Access"
-        case 2: return vaultWriter.hasVaultAccess ? "Done" : "Select Vault Folder"
+        case 2: return vaultWriter.hasVaultAccess ? "Done" : "Select Folder"
         default: return "Continue"
         }
     }
