@@ -9,10 +9,12 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
 
     static let shared = WatchPhoneConnector()
 
-    /// Whether the OTHER app is actually responding (verified via ping)
+    /// Whether the other device's app is connected and responding
     @Published var isReachable = false
-    /// Raw WCSession reachability (device-level, not app-level)
+    /// Raw WCSession reachability
     private var sessionReachable = false
+    /// Timestamp of last received message from the other device
+    private var lastMessageReceived: Date?
     @Published var pendingTransfers: Int = 0
 
     /// Remote device recording state
@@ -296,12 +298,11 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         let rawReachable = session.activationState == .activated && session.isReachable
         DispatchQueue.main.async {
             self.sessionReachable = rawReachable
-            self.isReachable = rawReachable
             self.pingRetryTimer?.invalidate()
             self.pingRetryTimer = nil
 
             if rawReachable {
-                // Exchange state with the other device
+                self.isReachable = true
                 self.pingRetryCount = 0
                 self.sendStatePing()
                 self.pingRetryTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] timer in
@@ -315,10 +316,19 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
                     }
                 }
             } else {
-                self.remoteIsRecording = false
-                self.remoteDevice = nil
-                self.remoteTimeoutTimer?.invalidate()
-                self.remoteTimeoutTimer = nil
+                // Check if we heard from the other device recently (within 30s)
+                // This handles the iOS asymmetry where isReachable is false for the watch
+                // but the watch can still send us messages
+                if let lastMsg = self.lastMessageReceived,
+                   Date().timeIntervalSince(lastMsg) < 30 {
+                    // Keep isReachable true — we heard from them recently
+                } else {
+                    self.isReachable = false
+                    self.remoteIsRecording = false
+                    self.remoteDevice = nil
+                    self.remoteTimeoutTimer?.invalidate()
+                    self.remoteTimeoutTimer = nil
+                }
             }
         }
     }
@@ -388,8 +398,9 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         guard let type = message["type"] as? String else { return }
 
         // Any received message proves the other app is alive
+        lastMessageReceived = Date()
         DispatchQueue.main.async {
-            if !self.isReachable { self.isReachable = true }
+            self.isReachable = true
         }
 
         switch type {

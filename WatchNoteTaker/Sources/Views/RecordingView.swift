@@ -24,7 +24,8 @@ struct RecordingView: View {
 
         switch viewModel.state {
         case .idle:
-            if viewModel.isRemoteRecording {
+            // Read directly from connector (Combine), not ViewModel (Observation)
+            if connector.remoteIsRecording {
                 return .remoteRecording
             }
             if let lastCapture = viewModel.lastCaptureTimestamp,
@@ -54,7 +55,7 @@ struct RecordingView: View {
             }
         }
         .onTapGesture {
-            guard !viewModel.isRemoteRecording else { return }
+            guard !connector.remoteIsRecording else { return }
 
             let wasRecording = viewModel.state == .recording
             viewModel.toggleRecording()

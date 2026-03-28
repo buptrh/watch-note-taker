@@ -39,9 +39,13 @@ struct PhoneRecordingView: View {
     @State private var waveAmplitudes: [CGFloat] = (0..<20).map { _ in CGFloat.random(in: 0.15...0.5) }
 
     private var isWatchMode: Bool {
-        // Either the transcription service detected watch audio, or the state sync says watch is recording
+        // Read directly from connector (Combine @Published), not ViewModel (@Observable)
         let watchRecording = watchService.isWatchRecording || (connector.remoteIsRecording && connector.remoteDevice == "watch")
         return watchRecording && viewModel.state == .idle
+    }
+
+    private var isRemoteRecording: Bool {
+        connector.remoteIsRecording
     }
 
     private var todayNoteCount: Int {
@@ -83,53 +87,29 @@ struct PhoneRecordingView: View {
 
     private var topBar: some View {
         HStack {
-            // Left: REC badge during recording, connection status otherwise
-            if viewModel.state == .recording {
-                HStack(spacing: 6) {
-                    Circle()
-                        .fill(DS.recording)
-                        .frame(width: 10, height: 10)
-                    Text("REC")
-                        .font(DS.Font.mono(size: 13))
-                        .fontWeight(.bold)
-                        .foregroundStyle(DS.recording)
-                }
-            } else {
-                HStack(spacing: 4) {
-                    Circle()
-                        .fill(connector.isReachable ? DS.success : DS.slate.opacity(0.3))
-                        .frame(width: 8, height: 8)
-                    if connector.isReachable {
-                        Text("Watch")
-                            .font(DS.Font.mono(size: 11))
-                            .foregroundStyle(DS.slateLight)
-                    }
+            // Left: connection status (always visible)
+            HStack(spacing: 4) {
+                Circle()
+                    .fill(connector.isReachable ? DS.success : DS.slate.opacity(0.3))
+                    .frame(width: 8, height: 8)
+                if connector.isReachable {
+                    Text("Watch")
+                        .font(DS.Font.mono(size: 11))
+                        .foregroundStyle(DS.slateLight)
                 }
             }
 
             Spacer()
 
-            // Right: always show connection dot + timer or gear
-            HStack(spacing: DS.Space.sm) {
-                if viewModel.state == .recording {
-                    // Connection dot during recording
-                    Circle()
-                        .fill(connector.isReachable ? DS.success : DS.slate.opacity(0.3))
-                        .frame(width: 6, height: 6)
-                    Text(formatDuration(viewModel.recordingDuration))
-                        .font(DS.Font.mono(size: 13))
-                        .foregroundStyle(.white)
-                } else {
-                    Button {
-                        showSettings = true
-                    } label: {
-                        Image(systemName: "gearshape")
-                            .font(.system(size: 18))
-                            .foregroundStyle(DS.slateLight)
-                    }
-                    .accessibilityIdentifier("settingsButton")
-                }
+            // Right: settings gear (always visible)
+            Button {
+                showSettings = true
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.system(size: 18))
+                    .foregroundStyle(DS.slateLight)
             }
+            .accessibilityIdentifier("settingsButton")
         }
         .padding(.horizontal, DS.Space.lg)
         .padding(.top, DS.Space.md)
@@ -344,7 +324,7 @@ struct PhoneRecordingView: View {
                 }
             }
         }
-        .disabled(viewModel.state == .transcribing || viewModel.state == .saving || viewModel.isRemoteRecording)
+        .disabled(viewModel.state == .transcribing || viewModel.state == .saving || isRemoteRecording)
     }
 
     // MARK: - Waveform Views
