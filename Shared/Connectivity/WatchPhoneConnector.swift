@@ -9,7 +9,10 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
 
     static let shared = WatchPhoneConnector()
 
+    /// Whether the OTHER app is actually responding (verified via ping)
     @Published var isReachable = false
+    /// Raw WCSession reachability (device-level, not app-level)
+    private var sessionReachable = false
     @Published var pendingTransfers: Int = 0
 
     /// Remote device recording state
@@ -87,13 +90,34 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
 
     /// Request remote state (called on app launch / reachability change)
     func sendStatePing() {
-        // Send our current state so the remote knows immediately
+        let session = WCSession.default
+        guard session.activationState == .activated, session.isReachable else {
+            print("[WPC] Can't ping — not activated or not reachable")
+            return
+        }
+
         let message: [String: Any] = [
             "type": "recordingStatePing",
             "device": localDevice,
             "isRecording": localIsRecording
         ]
-        sendMessageBestEffort(message)
+
+        // Use replyHandler to verify the other app is actually responding
+        session.sendMessage(message, replyHandler: { reply in
+            let isRec = reply["isRecording"] as? Bool ?? false
+            let dev = reply["device"] as? String
+            print("[WPC] Ping reply: isRecording=\(isRec) device=\(dev ?? "nil")")
+            DispatchQueue.main.async { [weak self] in
+                self?.isReachable = true
+                self?.remoteIsRecording = isRec
+                self?.remoteDevice = isRec ? dev : nil
+            }
+        }, errorHandler: { error in
+            print("[WPC] Ping failed: \(error.localizedDescription)")
+            DispatchQueue.main.async { [weak self] in
+                self?.isReachable = false
+            }
+        })
     }
 
     private func handleRecordingStateSync(_ message: [String: Any]) {
@@ -101,6 +125,9 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
               let device = message["device"] as? String else { return }
 
         DispatchQueue.main.async {
+            // We received a message — the other app is definitely reachable
+            self.isReachable = true
+
             self.remoteIsRecording = isRecording
             self.remoteDevice = isRecording ? device : nil
 
@@ -133,11 +160,20 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         }
     }
 
-    /// Best-effort send — no retry, no fallback. Used for state sync.
+    /// Best-effort send with error tracking. Used for state sync.
     private func sendMessageBestEffort(_ message: [String: Any]) {
         let session = WCSession.default
-        guard session.isReachable else { return }
-        session.sendMessage(message, replyHandler: nil)
+        guard session.activationState == .activated else {
+            print("[WPC] Session not activated, can't send")
+            return
+        }
+        guard session.isReachable else {
+            print("[WPC] Not reachable, can't send \(message["type"] ?? "?")")
+            return
+        }
+        session.sendMessage(message, replyHandler: nil) { error in
+            print("[WPC] Send failed for \(message["type"] ?? "?"): \(error.localizedDescription)")
+        }
     }
 
     // MARK: - Watch → Phone: Send audio chunk (hybrid with retry)
@@ -145,7 +181,7 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
     func sendAudioChunk(_ audioData: Data, recordingDate: Date) {
         let session = WCSession.default
 
-        if session.isReachable {
+        if sessionReachable || session.isReachable {
             sendMessageWithRetry(audioData: audioData, date: recordingDate, attempt: 1)
         } else {
             queueAudioFile(audioData, recordingDate: recordingDate)
@@ -198,7 +234,7 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
     func sendRecordingComplete(date: Date) {
         let session = WCSession.default
 
-        if session.isReachable {
+        if sessionReachable || session.isReachable {
             let message: [String: Any] = [
                 "type": "recordingComplete",
                 "date": date.timeIntervalSince1970
@@ -230,31 +266,49 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
     // MARK: - WCSessionDelegate
 
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        let reachable = session.isReachable
-        DispatchQueue.main.async {
-            self.isReachable = reachable
-        }
-        if reachable {
-            sendStatePing()
-        }
+        print("[WPC] Activation complete: \(activationState.rawValue), error: \(error?.localizedDescription ?? "none")")
+        updateReachability(session)
     }
 
     func sessionReachabilityDidChange(_ session: WCSession) {
-        let reachable = session.isReachable
+        print("[WPC] Reachability changed: \(session.isReachable)")
+        updateReachability(session)
+    }
+
+    private func updateReachability(_ session: WCSession) {
+        let rawReachable = session.activationState == .activated && session.isReachable
         DispatchQueue.main.async {
-            self.isReachable = reachable
-            if reachable {
+            self.sessionReachable = rawReachable
+            if rawReachable {
+                // Verify by sending a ping — only set isReachable when we get a response
                 self.sendStatePing()
-            } else if self.remoteIsRecording {
-                // Grace period before clearing remote state
-                self.clearRemoteStateAfterDelay(5)
+            } else {
+                self.isReachable = false
+                self.remoteIsRecording = false
+                self.remoteDevice = nil
+                self.remoteTimeoutTimer?.invalidate()
+                self.remoteTimeoutTimer = nil
             }
         }
     }
 
-    // Real-time message received
+    // Real-time message received (no reply expected)
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
         handleMessage(message)
+    }
+
+    // Real-time message received (reply expected)
+    func session(_ session: WCSession, didReceiveMessage message: [String: Any], replyHandler: @escaping ([String: Any]) -> Void) {
+        print("[WPC] Received message with replyHandler: \(message["type"] ?? "?")")
+        handleMessage(message)
+
+        // Reply with our current state
+        let reply: [String: Any] = [
+            "type": "recordingStateSync",
+            "device": localDevice,
+            "isRecording": localIsRecording
+        ]
+        replyHandler(reply)
     }
 
     // File transfer received (queued delivery)
@@ -303,6 +357,11 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
     private func handleMessage(_ message: [String: Any]) {
         guard let type = message["type"] as? String else { return }
 
+        // Any received message proves the other app is alive
+        DispatchQueue.main.async {
+            if !self.isReachable { self.isReachable = true }
+        }
+
         switch type {
         case "audioChunk":
             guard let audioData = message["audio"] as? Data,
@@ -321,10 +380,8 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
             handleRecordingStateSync(message)
 
         case "recordingStatePing":
-            // Process the sender's state
+            // Process the sender's state (reply is handled by replyHandler variant)
             handleRecordingStateSync(message)
-            // Reply with our own current state
-            sendStateSyncMessage(isRecording: localIsRecording, device: localDevice)
 
         default:
             break
