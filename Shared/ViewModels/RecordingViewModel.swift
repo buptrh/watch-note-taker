@@ -217,6 +217,14 @@ final class RecordingViewModel: RecordingToggleable {
                 sessionManager.stopKeepAlive()
                 activeMode = nil
                 state = .idle
+            } catch let error as TranscriptionError where error == .emptyResult {
+                // Empty result is not an error — show gentle confirmation
+                connector.sendRecordingStateChanged(isRecording: false)
+                sessionManager.stopKeepAlive()
+                lastCaptureTimestamp = Date()
+                lastTranscribedText = "(No speech detected)"
+                activeMode = nil
+                state = .idle
             } catch {
                 connector.sendRecordingStateChanged(isRecording: false)
                 sessionManager.stopKeepAlive()
