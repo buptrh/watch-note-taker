@@ -83,8 +83,8 @@ struct PhoneRecordingView: View {
 
     private var topBar: some View {
         HStack {
+            // Left: REC badge during recording, connection status otherwise
             if viewModel.state == .recording {
-                // REC indicator + timer
                 HStack(spacing: 6) {
                     Circle()
                         .fill(DS.recording)
@@ -95,7 +95,6 @@ struct PhoneRecordingView: View {
                         .foregroundStyle(DS.recording)
                 }
             } else {
-                // Connection indicator
                 HStack(spacing: 4) {
                     Circle()
                         .fill(connector.isReachable ? DS.success : DS.slate.opacity(0.3))
@@ -110,19 +109,26 @@ struct PhoneRecordingView: View {
 
             Spacer()
 
-            if viewModel.state == .recording {
-                Text(formatDuration(viewModel.recordingDuration))
-                    .font(DS.Font.mono(size: 13))
-                    .foregroundStyle(.white)
-            } else {
-                Button {
-                    showSettings = true
-                } label: {
-                    Image(systemName: "gearshape")
-                        .font(.system(size: 18))
-                        .foregroundStyle(DS.slateLight)
+            // Right: always show connection dot + timer or gear
+            HStack(spacing: DS.Space.sm) {
+                if viewModel.state == .recording {
+                    // Connection dot during recording
+                    Circle()
+                        .fill(connector.isReachable ? DS.success : DS.slate.opacity(0.3))
+                        .frame(width: 6, height: 6)
+                    Text(formatDuration(viewModel.recordingDuration))
+                        .font(DS.Font.mono(size: 13))
+                        .foregroundStyle(.white)
+                } else {
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Image(systemName: "gearshape")
+                            .font(.system(size: 18))
+                            .foregroundStyle(DS.slateLight)
+                    }
+                    .accessibilityIdentifier("settingsButton")
                 }
-                .accessibilityIdentifier("settingsButton")
             }
         }
         .padding(.horizontal, DS.Space.lg)

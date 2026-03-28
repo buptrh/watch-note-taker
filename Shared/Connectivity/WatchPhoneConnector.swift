@@ -282,17 +282,18 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         let rawReachable = session.activationState == .activated && session.isReachable
         DispatchQueue.main.async {
             self.sessionReachable = rawReachable
+            self.isReachable = rawReachable
             self.pingRetryTimer?.invalidate()
             self.pingRetryTimer = nil
 
             if rawReachable {
-                // Verify by sending a ping — retry a few times since session may not be ready
+                // Exchange state with the other device
                 self.pingRetryCount = 0
                 self.sendStatePing()
                 self.pingRetryTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] timer in
                     guard let self else { timer.invalidate(); return }
                     self.pingRetryCount += 1
-                    if self.isReachable || self.pingRetryCount >= 5 {
+                    if self.pingRetryCount >= 3 {
                         timer.invalidate()
                         self.pingRetryTimer = nil
                     } else {
@@ -300,7 +301,6 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
                     }
                 }
             } else {
-                self.isReachable = false
                 self.remoteIsRecording = false
                 self.remoteDevice = nil
                 self.remoteTimeoutTimer?.invalidate()
