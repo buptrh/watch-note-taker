@@ -39,7 +39,9 @@ struct PhoneRecordingView: View {
     @State private var waveAmplitudes: [CGFloat] = (0..<20).map { _ in CGFloat.random(in: 0.15...0.5) }
 
     private var isWatchMode: Bool {
-        (watchService.isWatchRecording || viewModel.isRemoteRecording) && viewModel.state == .idle
+        // Either the transcription service detected watch audio, or the state sync says watch is recording
+        let watchRecording = watchService.isWatchRecording || (connector.remoteIsRecording && connector.remoteDevice == "watch")
+        return watchRecording && viewModel.state == .idle
     }
 
     private var todayNoteCount: Int {

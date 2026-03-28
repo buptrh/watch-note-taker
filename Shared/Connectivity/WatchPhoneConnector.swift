@@ -46,14 +46,20 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
 
     // MARK: - Recording State Sync
 
+    /// Whether this device is currently recording (tracked for ping replies)
+    private var localIsRecording = false
+
     /// Broadcast local recording state to the other device
     func sendRecordingStateChanged(isRecording: Bool) {
+        localIsRecording = isRecording
         let device = localDevice
 
         if isRecording {
+            // Send immediately, then heartbeat every 3s for reliability
+            sendStateSyncMessage(isRecording: true, device: device)
             DispatchQueue.main.async {
                 self.heartbeatTimer?.invalidate()
-                self.heartbeatTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
+                self.heartbeatTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] _ in
                     self?.sendStateSyncMessage(isRecording: true, device: device)
                 }
             }
@@ -62,9 +68,12 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
                 self.heartbeatTimer?.invalidate()
                 self.heartbeatTimer = nil
             }
+            // Send stop multiple times for reliability
+            sendStateSyncMessage(isRecording: false, device: device)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.sendStateSyncMessage(isRecording: false, device: device)
+            }
         }
-
-        sendStateSyncMessage(isRecording: isRecording, device: device)
     }
 
     private func sendStateSyncMessage(isRecording: Bool, device: String) {
@@ -78,10 +87,11 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
 
     /// Request remote state (called on app launch / reachability change)
     func sendStatePing() {
+        // Send our current state so the remote knows immediately
         let message: [String: Any] = [
             "type": "recordingStatePing",
             "device": localDevice,
-            "isRecording": false // local state — the remote will reply with theirs
+            "isRecording": localIsRecording
         ]
         sendMessageBestEffort(message)
     }
@@ -105,7 +115,7 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
 
     private func resetRemoteTimeout() {
         remoteTimeoutTimer?.invalidate()
-        remoteTimeoutTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: false) { [weak self] _ in
+        remoteTimeoutTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
             DispatchQueue.main.async {
                 self?.remoteIsRecording = false
                 self?.remoteDevice = nil
@@ -311,10 +321,10 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
             handleRecordingStateSync(message)
 
         case "recordingStatePing":
-            // Reply with our current state — not recording (idle) or recording
-            // For now, we don't track our own state here, so reply with false
-            // The ViewModel will call sendRecordingStateChanged on start/stop
-            break
+            // Process the sender's state
+            handleRecordingStateSync(message)
+            // Reply with our own current state
+            sendStateSyncMessage(isRecording: localIsRecording, device: localDevice)
 
         default:
             break
