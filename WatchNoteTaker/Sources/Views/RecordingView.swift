@@ -40,12 +40,6 @@ struct RecordingView: View {
         }
     }
 
-    private var currentFilename: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return "watch_\(formatter.string(from: Date())).md"
-    }
-
     var body: some View {
         TimelineView(.periodic(from: .now, by: viewModel.state == .recording ? 1 : 60)) { _ in
             contentView
@@ -90,10 +84,7 @@ struct RecordingView: View {
                 isModelReady: viewModel.isModelReady
             )
         case .confirmation:
-            ConfirmationIndicator(
-                text: viewModel.lastTranscribedText,
-                filename: currentFilename
-            )
+            ConfirmationIndicator(text: viewModel.lastTranscribedText)
         case .remoteRecording:
             PhoneRecordingIndicator()
         case .error(let message):

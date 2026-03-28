@@ -2,44 +2,35 @@ import SwiftUI
 
 struct ConfirmationIndicator: View {
     var text: String?
-    var filename: String?
 
     var body: some View {
         VStack(spacing: DS.Space.sm) {
-            Spacer()
-
             // Green checkmark circle
             ZStack {
                 Circle()
                     .stroke(DS.success, lineWidth: 3)
-                    .frame(width: 40, height: 40)
+                    .frame(width: 32, height: 32)
                 Image(systemName: "checkmark")
-                    .font(.system(size: 18, weight: .bold))
+                    .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(DS.success)
             }
+            .padding(.top, DS.Space.sm)
 
-            Text("Saved to vault")
+            Text("Saved")
                 .font(DS.Font.heading(size: 13))
                 .foregroundStyle(DS.success)
 
-            if let filename {
-                Text(filename)
-                    .font(DS.Font.mono(size: 10))
-                    .foregroundStyle(DS.slateLight)
-            }
-
             if let text, !text.isEmpty {
                 ScrollView {
-                    Text("\"\(text.prefix(100))...\"")
-                        .font(DS.Font.body(size: 10))
-                        .foregroundStyle(DS.slateLight)
-                        .multilineTextAlignment(.center)
+                    Text(text)
+                        .font(DS.Font.body(size: 11))
+                        .foregroundStyle(.white.opacity(0.8))
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, DS.Space.sm)
                 }
-                .frame(maxHeight: 40)
+                .onTapGesture { }
             }
-
-            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(DS.ink)
@@ -47,8 +38,5 @@ struct ConfirmationIndicator: View {
 }
 
 #Preview {
-    ConfirmationIndicator(
-        text: "I need to remember to check the API rate limits...",
-        filename: "watch_2026-03-26.md"
-    )
+    ConfirmationIndicator(text: "I need to remember to check the API rate limits before deploying the update.")
 }
