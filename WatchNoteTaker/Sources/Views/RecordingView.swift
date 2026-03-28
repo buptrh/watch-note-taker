@@ -24,7 +24,6 @@ struct RecordingView: View {
 
         switch viewModel.state {
         case .idle:
-            // Check if the other device is recording
             if viewModel.isRemoteRecording {
                 return .remoteRecording
             }
@@ -42,10 +41,17 @@ struct RecordingView: View {
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: viewModel.state == .recording ? 1 : 60)) { _ in
-            contentView
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(DS.ink)
-                .opacity(isLuminanceReduced && viewModel.state == .idle ? 0.6 : 1.0)
+            ZStack(alignment: .topTrailing) {
+                contentView
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(DS.ink)
+                    .opacity(isLuminanceReduced && viewModel.state == .idle ? 0.6 : 1.0)
+
+                // Connection indicator — always visible
+                connectionDot
+                    .padding(.trailing, DS.Space.sm)
+                    .padding(.top, DS.Space.xs)
+            }
         }
         .onTapGesture {
             guard !viewModel.isRemoteRecording else { return }
@@ -68,11 +74,21 @@ struct RecordingView: View {
         }
     }
 
+    // MARK: - Connection Indicator
+
+    private var connectionDot: some View {
+        Circle()
+            .fill(connector.isReachable ? DS.success : DS.slate.opacity(0.3))
+            .frame(width: 6, height: 6)
+    }
+
+    // MARK: - Content
+
     @ViewBuilder
     private var contentView: some View {
         switch displayState {
         case .ready:
-            ReadyIndicator(isConnected: connector.isReachable)
+            ReadyIndicator()
         case .recording:
             RecordingIndicator(
                 duration: viewModel.recordingDuration,

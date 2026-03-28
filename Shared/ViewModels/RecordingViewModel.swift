@@ -195,8 +195,9 @@ final class RecordingViewModel: RecordingToggleable {
                 if fullText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     connector.sendRecordingStateChanged(isRecording: false)
                     sessionManager.stopKeepAlive()
+                    lastCaptureTimestamp = Date()
+                    lastTranscribedText = "(No speech detected)"
                     activeMode = nil
-                    errorMessage = "No speech detected"
                     state = .idle
                     return
                 }
