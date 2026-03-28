@@ -168,9 +168,21 @@ final class RecordingViewModel: RecordingToggleable {
                             // Last chunk failed — not critical, we have the earlier chunks
                         }
                     }
+                } else if activeMode == .phoneStream && chunksSoFar == 0 {
+                    // Phone relay mode but no chunks came back.
+                    // Don't attempt local transcription on watch — model is too heavy.
+                    // Use whatever live transcript we have, or show error.
+                    if liveTranscript.isEmpty {
+                        connector.sendRecordingStateChanged(isRecording: false)
+                        sessionManager.stopKeepAlive()
+                        activeMode = nil
+                        errorMessage = "No response from iPhone. Make sure the app is open on your phone."
+                        state = .idle
+                        return
+                    }
                 } else {
-                    // No chunks were transcribed (short recording or non-streaming).
-                    // Transcribe the full recording at once.
+                    // Non-streaming or local chunking with no chunks.
+                    // Transcribe the full recording locally.
                     let text = try await transcriptionEngine.transcribe(buffer: fullBuffer)
                     liveTranscript = text
                 }

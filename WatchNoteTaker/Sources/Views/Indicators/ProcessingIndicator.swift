@@ -34,8 +34,11 @@ struct ProcessingIndicator: View {
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, DS.Space.sm)
+                        .padding(.vertical, DS.Space.xs)
                 }
                 .frame(maxHeight: 60)
+                .background(DS.inkMid.opacity(0.5), in: RoundedRectangle(cornerRadius: DS.Radius.sm))
+                .padding(.horizontal, DS.Space.xs)
                 .onTapGesture { }
             }
 

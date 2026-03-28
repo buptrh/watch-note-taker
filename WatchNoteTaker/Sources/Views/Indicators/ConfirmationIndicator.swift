@@ -28,7 +28,10 @@ struct ConfirmationIndicator: View {
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, DS.Space.sm)
+                        .padding(.vertical, DS.Space.xs)
                 }
+                .background(DS.inkMid.opacity(0.5), in: RoundedRectangle(cornerRadius: DS.Radius.sm))
+                .padding(.horizontal, DS.Space.xs)
                 .onTapGesture { }
             }
         }

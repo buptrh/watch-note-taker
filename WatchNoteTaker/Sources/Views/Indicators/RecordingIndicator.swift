@@ -47,7 +47,7 @@ struct RecordingIndicator: View {
                 animateWave()
             }
 
-            // Live transcript — tap here scrolls, doesn't toggle recording
+            // Live transcript — scrollable, taps don't toggle recording
             if !liveTranscript.isEmpty {
                 ScrollView {
                     Text(liveTranscript)
@@ -56,10 +56,13 @@ struct RecordingIndicator: View {
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, DS.Space.sm)
+                        .padding(.vertical, DS.Space.xs)
                 }
                 .frame(maxHeight: 60)
+                .background(DS.inkMid.opacity(0.5), in: RoundedRectangle(cornerRadius: DS.Radius.sm))
+                .padding(.horizontal, DS.Space.xs)
                 .padding(.top, DS.Space.sm)
-                .onTapGesture { } // Consume tap to prevent recording toggle
+                .onTapGesture { }
             }
 
             Spacer()

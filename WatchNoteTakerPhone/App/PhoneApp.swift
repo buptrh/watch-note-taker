@@ -20,6 +20,8 @@ struct WatchNoteTakerPhoneApp: App {
             vaultWriter: vw,
             noteStore: NoteStore()
         ))
+        // Activate connector early so watch messages aren't dropped during loading
+        WatchPhoneConnector.shared.activate()
     }
 
     var body: some Scene {
