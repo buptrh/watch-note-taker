@@ -41,16 +41,16 @@ struct RecordingView: View {
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: viewModel.state == .recording ? 1 : 60)) { _ in
-            ZStack(alignment: .topTrailing) {
+            ZStack(alignment: .bottomTrailing) {
                 contentView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(DS.ink)
                     .opacity(isLuminanceReduced && viewModel.state == .idle ? 0.6 : 1.0)
 
-                // Connection indicator — always visible
+                // Connection indicator — always visible, bottom-right corner
                 connectionDot
                     .padding(.trailing, DS.Space.sm)
-                    .padding(.top, DS.Space.xs)
+                    .padding(.bottom, DS.Space.sm)
             }
         }
         .onTapGesture {

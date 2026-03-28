@@ -80,12 +80,26 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
     }
 
     private func sendStateSyncMessage(isRecording: Bool, device: String) {
+        let session = WCSession.default
+        guard session.activationState == .activated, session.isReachable else {
+            DispatchQueue.main.async { self.isReachable = false }
+            return
+        }
         let message: [String: Any] = [
             "type": "recordingStateSync",
             "isRecording": isRecording,
             "device": device
         ]
-        sendMessageBestEffort(message)
+        session.sendMessage(message, replyHandler: { reply in
+            DispatchQueue.main.async { [weak self] in
+                self?.isReachable = true
+            }
+        }, errorHandler: { error in
+            print("[WPC] State sync failed: \(error.localizedDescription)")
+            DispatchQueue.main.async { [weak self] in
+                self?.isReachable = false
+            }
+        })
     }
 
     /// Request remote state (called on app launch / reachability change)
@@ -160,19 +174,19 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
         }
     }
 
-    /// Best-effort send with error tracking. Used for state sync.
+    /// Send message and track delivery. If send fails, mark as disconnected.
     private func sendMessageBestEffort(_ message: [String: Any]) {
         let session = WCSession.default
-        guard session.activationState == .activated else {
-            print("[WPC] Session not activated, can't send")
-            return
-        }
+        guard session.activationState == .activated else { return }
         guard session.isReachable else {
-            print("[WPC] Not reachable, can't send \(message["type"] ?? "?")")
+            DispatchQueue.main.async { self.isReachable = false }
             return
         }
         session.sendMessage(message, replyHandler: nil) { error in
-            print("[WPC] Send failed for \(message["type"] ?? "?"): \(error.localizedDescription)")
+            print("[WPC] Send failed: \(error.localizedDescription)")
+            DispatchQueue.main.async { [weak self] in
+                self?.isReachable = false
+            }
         }
     }
 
@@ -316,10 +330,9 @@ final class WatchPhoneConnector: NSObject, WCSessionDelegate, ObservableObject, 
 
     // Real-time message received (reply expected)
     func session(_ session: WCSession, didReceiveMessage message: [String: Any], replyHandler: @escaping ([String: Any]) -> Void) {
-        print("[WPC] Received message with replyHandler: \(message["type"] ?? "?")")
         handleMessage(message)
 
-        // Reply with our current state
+        // Always reply with current state — confirms we're alive
         let reply: [String: Any] = [
             "type": "recordingStateSync",
             "device": localDevice,
