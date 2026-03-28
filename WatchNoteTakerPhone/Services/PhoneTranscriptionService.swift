@@ -118,7 +118,3 @@ final class PhoneTranscriptionService: ObservableObject {
         sessionManager.stopKeepAlive()
     }
 }
-
-extension Notification.Name {
-    static let watchRecordingComplete = Notification.Name("watchRecordingComplete")
-}

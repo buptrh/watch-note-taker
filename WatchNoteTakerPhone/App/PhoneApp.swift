@@ -20,8 +20,8 @@ struct WatchNoteTakerPhoneApp: App {
             vaultWriter: vw,
             noteStore: NoteStore()
         ))
-        // Activate connector early so watch messages aren't dropped during loading
-        WatchPhoneConnector.shared.activate()
+        // NOTE: Do NOT activate here. Callbacks must be registered first.
+        // Activation happens in .onAppear after all @StateObject inits complete.
     }
 
     var body: some Scene {
@@ -43,7 +43,6 @@ struct WatchNoteTakerPhoneApp: App {
                     .onAppear {
                         ActionButtonIntent.viewModel = viewModel
                         WatchPhoneConnector.shared.activate()
-                        WatchPhoneConnector.shared.sendStatePing()
                     }
                     .task {
                         ActionButtonShortcutsProvider.updateAppShortcutParameters()

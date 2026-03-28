@@ -102,7 +102,7 @@ final class RecordingViewModel: RecordingToggleable {
             }
         }
 
-        let phoneReachable = preferPhoneRelay && connector.isReachable
+        let phoneReachable = preferPhoneRelay && connector.isConnected
         let useStreaming = phoneReachable || useLocalChunking
 
         if phoneReachable {

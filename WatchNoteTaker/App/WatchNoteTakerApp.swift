@@ -30,12 +30,11 @@ struct WatchNoteTakerApp: App {
                 .onAppear {
                     ActionButtonIntent.viewModel = viewModel
                     WatchPhoneConnector.shared.activate()
-                    WatchPhoneConnector.shared.sendStatePing()
                 }
                 .task {
                     ActionButtonShortcutsProvider.updateAppShortcutParameters()
                     // Only prewarm local model if phone isn't reachable
-                    if !WatchPhoneConnector.shared.isReachable {
+                    if !WatchPhoneConnector.shared.isConnected {
                         await viewModel.prewarmModel()
                     }
                 }

@@ -90,9 +90,9 @@ struct PhoneRecordingView: View {
             // Left: connection status (always visible)
             HStack(spacing: 4) {
                 Circle()
-                    .fill(connector.isReachable ? DS.success : DS.slate.opacity(0.3))
+                    .fill(connector.isConnected ? DS.success : DS.slate.opacity(0.3))
                     .frame(width: 8, height: 8)
-                if connector.isReachable {
+                if connector.isConnected {
                     Text("Watch")
                         .font(DS.Font.mono(size: 11))
                         .foregroundStyle(DS.slateLight)

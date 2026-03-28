@@ -79,7 +79,7 @@ struct RecordingView: View {
 
     private var connectionDot: some View {
         Circle()
-            .fill(connector.isReachable ? DS.success : DS.slate.opacity(0.3))
+            .fill(connector.isConnected ? DS.success : DS.slate.opacity(0.3))
             .frame(width: 6, height: 6)
     }
 

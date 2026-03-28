@@ -95,7 +95,8 @@ final class RecordingViewModelTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(500))
 
         XCTAssertEqual(sut.state, .idle)
-        XCTAssertNotNil(sut.errorMessage)
+        // Empty result is now a gentle confirmation, not an error
+        XCTAssertNotNil(sut.lastTranscribedText)
     }
 
     func testSaveError_returnsToIdle() async throws {
@@ -145,6 +146,8 @@ final class RecordingViewModelTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(500))
 
         XCTAssertEqual(sut.state, .idle)
-        XCTAssertNotNil(sut.errorMessage)
+        // Empty result shown as confirmation, not error
+        XCTAssertNotNil(sut.lastTranscribedText)
+        XCTAssertNil(sut.errorMessage)
     }
 }
