@@ -144,8 +144,6 @@ final class RecordingViewModel: RecordingToggleable {
 
         Task {
             do {
-                let chunksSoFar = chunksTranscribed
-
                 // Replace callback to capture flush without triggering transcription
                 var flushBuffers: [AVAudioPCMBuffer]?
                 audioRecorder.onChunkReady = { buffers in
@@ -155,6 +153,10 @@ final class RecordingViewModel: RecordingToggleable {
                 // stop() triggers VAD flush → captured in flushBuffers (not transcribed)
                 let fullBuffer = try await audioRecorder.stop()
                 audioRecorder.onChunkReady = nil
+
+                // Read chunksTranscribed AFTER stop() returns — phone transcriptions
+                // may have arrived during the await.
+                let chunksSoFar = chunksTranscribed
 
                 if wasStreaming && chunksSoFar > 0 {
                     // Chunks were transcribed during recording.
@@ -169,10 +171,14 @@ final class RecordingViewModel: RecordingToggleable {
                         }
                     }
                 } else if activeMode == .phoneStream && chunksSoFar == 0 {
-                    // Phone relay mode but no chunks came back.
-                    // Don't attempt local transcription on watch — model is too heavy.
-                    // Use whatever live transcript we have, or show error.
+                    // Phone relay mode but no transcription results yet.
+                    // Wait for phone to send back transcription text.
                     if liveTranscript.isEmpty {
+                        try? await Task.sleep(for: .seconds(2))
+                    }
+                    if liveTranscript.isEmpty {
+                        // Still nothing — tell the phone to save its own copy
+                        connector.sendRecordingComplete(date: recordingStartTime ?? Date())
                         connector.sendRecordingStateChanged(isRecording: false)
                         sessionManager.stopKeepAlive()
                         activeMode = nil
