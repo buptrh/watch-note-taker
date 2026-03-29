@@ -15,6 +15,8 @@ final class RecordingViewModel: RecordingToggleable {
     private(set) var errorMessage: String?
     private(set) var lastCaptureTimestamp: Date?
     private(set) var lastTranscribedText: String?
+    private(set) var lastSavedFilename: String?
+    private(set) var lastSaveMode: String?
     private(set) var chunksTranscribed: Int = 0
     private(set) var activeMode: TranscriptionMode?
 
@@ -204,12 +206,14 @@ final class RecordingViewModel: RecordingToggleable {
 
                 let entry = MarkdownFormatter.formatEntry(text: fullText, at: now)
                 try noteStore.save(entry: entry, for: now)
+                lastSavedFilename = MarkdownFormatter.filename(for: now)
+                lastSaveMode = activeMode?.rawValue ?? "local"
 
                 if activeMode == .phoneStream {
                     connector.sendRecordingComplete(date: now)
                 }
 
-                lastCaptureTimestamp = Date()  // Use current time, not recording start
+                lastCaptureTimestamp = Date()
                 lastTranscribedText = fullText
                 let duration = recordingDuration
                 onRecordingSaved?(fullText, now, duration)

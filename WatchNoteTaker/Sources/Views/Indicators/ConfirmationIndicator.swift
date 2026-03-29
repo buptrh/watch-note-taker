@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ConfirmationIndicator: View {
     var text: String?
+    var filename: String?
+    var mode: String?
 
     var body: some View {
         VStack(spacing: DS.Space.sm) {
@@ -19,6 +21,18 @@ struct ConfirmationIndicator: View {
             Text("Saved")
                 .font(DS.Font.heading(size: 13))
                 .foregroundStyle(DS.success)
+
+            // Show filename and mode for debugging
+            if let filename {
+                Text(filename)
+                    .font(DS.Font.mono(size: 9))
+                    .foregroundStyle(DS.slateLight)
+            }
+            if let mode {
+                Text(mode)
+                    .font(DS.Font.mono(size: 8))
+                    .foregroundStyle(DS.slate)
+            }
 
             if let text, !text.isEmpty {
                 ScrollView {
@@ -41,5 +55,9 @@ struct ConfirmationIndicator: View {
 }
 
 #Preview {
-    ConfirmationIndicator(text: "I need to remember to check the API rate limits before deploying the update.")
+    ConfirmationIndicator(
+        text: "I need to remember to check the API rate limits.",
+        filename: "watch_2026-03-28.md",
+        mode: "local"
+    )
 }

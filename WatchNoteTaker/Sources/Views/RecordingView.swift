@@ -101,7 +101,11 @@ struct RecordingView: View {
                 isModelReady: viewModel.isModelReady
             )
         case .confirmation:
-            ConfirmationIndicator(text: viewModel.lastTranscribedText)
+            ConfirmationIndicator(
+                text: viewModel.lastTranscribedText,
+                filename: viewModel.lastSavedFilename,
+                mode: viewModel.lastSaveMode
+            )
         case .remoteRecording:
             PhoneRecordingIndicator()
         case .error(let message):
