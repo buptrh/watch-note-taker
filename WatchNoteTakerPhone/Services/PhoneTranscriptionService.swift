@@ -10,6 +10,8 @@ final class PhoneTranscriptionService: ObservableObject {
     @Published var isTranscribing = false
     @Published var liveTranscript: String = ""
     @Published var chunksProcessed: Int = 0
+    @Published var lastSavedText: String?
+    @Published var errorMessage: String?
 
     private let transcriptionEngine: any Transcribing
     private let vaultWriter: VaultWriter
@@ -17,6 +19,9 @@ final class PhoneTranscriptionService: ObservableObject {
     private let connector = WatchPhoneConnector.shared
     private let sessionManager = SessionManager()
     private var recordingDate: Date?
+    private var isFinalizing = false
+
+    var onRecordingSaved: ((String, Date, TimeInterval) -> Void)?
 
     init(transcriptionEngine: any Transcribing, vaultWriter: VaultWriter, noteStore: any NoteStoring) {
         self.transcriptionEngine = transcriptionEngine
@@ -29,10 +34,6 @@ final class PhoneTranscriptionService: ObservableObject {
             }
         }
 
-        // Listen for recording complete from watch
-        let existingHandler = connector.onTranscriptionReceived
-        // We need a separate handler for recordingComplete
-        // Override the message handler to also catch recordingComplete
         NotificationCenter.default.addObserver(
             forName: .watchRecordingComplete,
             object: nil,
@@ -49,7 +50,7 @@ final class PhoneTranscriptionService: ObservableObject {
     }
 
     private func processChunk(data: Data, date: Date) async {
-        if !isWatchRecording {
+        if !isWatchRecording && !isFinalizing {
             isWatchRecording = true
             recordingDate = date
             liveTranscript = ""
@@ -93,12 +94,13 @@ final class PhoneTranscriptionService: ObservableObject {
 
     func finalizeRecording() async {
         guard isWatchRecording else { return }
+        isFinalizing = true
         isWatchRecording = false
 
-        // Wait briefly for any in-flight transcriptions
+        // Wait briefly for any in-flight transcriptions to complete.
+        // isFinalizing prevents late-arriving chunks from resetting liveTranscript.
         try? await Task.sleep(for: .seconds(1))
 
-        // Save accumulated transcript as ONE entry
         let date = recordingDate ?? Date()
         let fullText = liveTranscript
 
@@ -110,11 +112,15 @@ final class PhoneTranscriptionService: ObservableObject {
                 } else {
                     try noteStore.save(entry: entry, for: date)
                 }
+                lastSavedText = fullText
+                errorMessage = nil
+                onRecordingSaved?(fullText, date, 0)
             } catch {
-                print("Failed to save watch recording: \(error)")
+                errorMessage = "Failed to save: \(error.localizedDescription)"
             }
         }
 
+        isFinalizing = false
         sessionManager.stopKeepAlive()
     }
 }

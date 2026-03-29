@@ -80,6 +80,9 @@ struct PhoneRecordingView: View {
             viewModel.onRecordingSaved = { text, date, duration in
                 history.add(text: text, date: date, duration: duration)
             }
+            watchService.onRecordingSaved = { text, date, _ in
+                history.add(text: text, date: date, duration: 0, source: "watch")
+            }
         }
     }
 
